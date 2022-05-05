@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GlobalsManager : MonoBehaviour
 {
@@ -38,13 +39,21 @@ public class GlobalsManager : MonoBehaviour
     public static bool terranBossDestroyed;
 
     public static GameObject lastPickedWeapon;
-    public ShipSelected shipSelected;
-    public GameState gameState;
+    public static ShipSelected shipSelected;
+    [SerializeField]
+    public static GameState gameState;
+    
+
+    void OnEnable()
+
+    {
+        Health.OnGameOver += GameOver;
+        MainMenuController.OnGameStart += StartGame;
+    }
 
     private void Start() 
     
     {   
-        Health.GameOver += GameOver;
         gameState = GameState.MainMenu;
     }
 
@@ -60,7 +69,7 @@ public class GlobalsManager : MonoBehaviour
         gameState = GameState.Game;
     }
 
-    public void StartGame () 
+    public static void StartGame () 
     
     {
         ammo = 200;
@@ -73,7 +82,14 @@ public class GlobalsManager : MonoBehaviour
         health = 10;
         score = 0;
         //lastPickedWeapon = pulsegunpickup;
-        gameState = GameState.Game;
+        
+    }
+
+    void OnDisable()
+
+    {
+        Health.OnGameOver -= GameOver;
+        MainMenuController.OnGameStart -= StartGame;
     }
 
 

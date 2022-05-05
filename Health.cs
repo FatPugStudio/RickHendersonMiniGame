@@ -16,28 +16,21 @@ public class Health : MonoBehaviour
     private GameObject playerShield;
     private PlayerShipShield _playerShipShield;
     
-    public static event Action GameOver;
+    public delegate void GameOver();
+    public static event GameOver OnGameOver;
     
-    void Start()
+
     
+    void OnEnable()
+
     {
-        cachedEnergyBar = cachedBarObject.GetComponent<EnergyBar>();
+        MainMenuController.OnGameStart += StartGame;
+        //cachedEnergyBar = cachedBarObject.GetComponent<EnergyBar>();
         playerShield = GameObject.Find("PlayerShipShield");
         _playerShipShield = playerShield.gameObject.GetComponent<PlayerShipShield>();
     }
 
-    // Update is called once per frame
-    void Update()
-    
-    {
-        
-    }
-
-    void FixedUpdate() 
-    
-    {
-        //on collision enter
-        void OnCollisionEnter2D(Collision2D other) 
+    void OnCollisionEnter2D(Collision2D other) 
         
         {
             enemyHitTag = other.gameObject.tag;
@@ -59,7 +52,6 @@ public class Health : MonoBehaviour
             }
             
         }    
-    }
 
     void StartGame()
     
@@ -84,22 +76,16 @@ public class Health : MonoBehaviour
         }
 
         //set energybar min max and current value
-        cachedEnergyBar.SetValueMax(GlobalsManager.health);
-        cachedEnergyBar.SetValueMin(0);
-        cachedEnergyBar.valueCurrent = Mathf.Clamp(GlobalsManager.health, cachedEnergyBar.valueMin, cachedEnergyBar.valueMax);
+        
+        //ne može da nađe ovo
+        //cachedEnergyBar.SetValueMax(GlobalsManager.health);
+        //cachedEnergyBar.SetValueMin(0);
+        //cachedEnergyBar.valueCurrent = Mathf.Clamp(GlobalsManager.health, cachedEnergyBar.valueMin, cachedEnergyBar.valueMax);
         
         
         
         //spawn explosions
 
-    }
-
-    private void Dead()
-    
-    {
-        //spawn explosion
-        if (GameOver !=null)
-        GameOver();
     }
 
     void TakeDamage()
@@ -116,12 +102,12 @@ public class Health : MonoBehaviour
         
         {
             GlobalsManager.health -= 1;
-            cachedEnergyBar.SetValueCurrent(GlobalsManager.health);
+            //cachedEnergyBar.SetValueCurrent(GlobalsManager.health);
 
             if (GlobalsManager.health == 0)
 
                 {
-                    GameOver();
+                    OnGameOver();
                 }
             
             else 
@@ -129,6 +115,12 @@ public class Health : MonoBehaviour
             _playerShipShield.ActivateShield();
         }
 
+    }
+
+    void OnDisable() 
+    
+    {
+        MainMenuController.OnGameStart -= StartGame;
     }
         
     

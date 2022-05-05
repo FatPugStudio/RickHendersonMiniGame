@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a5b63f87a1a7bc42ad310ea03df4bbf, type: 3}
+  m_Name: Ben
+  m_EditorClassIdentifier: 
+  shipImage: {fileID: 21300000, guid: 3796153af4dafb14889231a59018d38a, type: 3}
+  pilotName: 'PILO NAME: BEN X9'
+  movementSpeed: MOVEMENT SPEED
+  rotationSpeed: ROTATION SPEED
+  health: HEALTH 10
+  ammo: AMMO 10
+  shieldDuration: SHIELD DURATION 3

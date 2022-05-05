@@ -18,7 +18,7 @@ public class PulseGunFiringSystem : MonoBehaviour {
     void Start ()
 
     {
-        Health.GameOver += GameOver;
+        Health.OnGameOver += GameOver;
         
         ammo = GlobalsManager.ammo;
         gunpoint = GameObject.Find ("Gunpoint");
@@ -91,14 +91,13 @@ public class PulseGunFiringSystem : MonoBehaviour {
     public void GameOver ()
 
     {
-        Health.GameOver -= GameOver;
         ubhShotCtrl.StopShotRoutineAndPlayingShot();
     }
 
     private void OnDisable() 
     
     {
-        Health.GameOver -= GameOver;
+        Health.OnGameOver -= GameOver;
     }
 
 }

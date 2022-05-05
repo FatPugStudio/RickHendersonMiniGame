@@ -23,11 +23,12 @@ public class AmmoSpawner : MonoBehaviour
     Vector3 spawnerPosition;
 
     public ShipSelected shipSelected;
+    
 
-    void Start()
+    void OnEnable() 
     
     {
-        Health.GameOver += GameOver;
+        MainMenuController.OnGameStart += StartGame;    
     }
 
     void StartGame()
@@ -71,7 +72,12 @@ public class AmmoSpawner : MonoBehaviour
     {
         //Unsubscribe from Game Over Event and stop spawning ammo
 
-        Health.GameOver -= GameOver;
         StopCoroutine(SpawnAmmo());
+    }
+
+    private void OnDisable() 
+    
+    {
+        MainMenuController.OnGameStart -= StartGame;
     }
 }

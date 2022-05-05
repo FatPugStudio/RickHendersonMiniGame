@@ -1,106 +1,150 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Rewired;
 using UnityEngine;
 
-public class ShipMovement : MonoBehaviour
-{
+public class ShipMovement : MonoBehaviour {
+
+    //rewired
     
-    public bool boost;
-    public float boosSpeed;
-    public bool brake;
+    private int playerId = 0;
+    private Player player;
+    private bool boost;
+    private bool brake;
+    private bool regular;
+
+    //speeds
+    
+    public float boostSpeed;
     public float brakeSpeed;
-    public bool regular;
     public float regularSpeed;
-
-    Vector2 velocity;
-    Rigidbody2D rigidbody2D;
-
-    void Start()
+    private float Speed;
     
+    private Rigidbody2D rigidbody2d;
+
+    private void OnEnable ()
+
     {
-        Health.GameOver += GameOver;
+        player = ReInput.players.GetPlayer (playerId);
+        rigidbody2d = GetComponent<Rigidbody2D> ();
+        Health.OnGameOver += GameOver;
+        MainMenuController.OnGameStart += StartGame;
     }
 
-    // Update is called once per frame
-    void Update()
+    void StartGame ()
+
     {
-        rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
-    }
+        if (GlobalsManager.shipSelected == ShipSelected.Rick)
 
-    void StartGame()
-    
-    {
-        //get ship
-        
-        //rick 
-        //regular speed 0,75
-        //boost speed 1
-        //brake speed 0,5
-
-        //ben
-        //regular speed 0,9
-        //boost speed 1,15
-        //brake speed 0,65
-
-        //thoraxx
-        //regular speed 0,6
-        //boost speed 0385
-        //brake speed 0,35
-    }
-    
-    void BoostAndBreakMeterEmpty()
-        
         {
-            //set FSM rotation rotationmultiplier float 1
-            bool boost = false;
-            bool brake = false;
-            bool regular = true;
-            
-            //move regular speed in local space
+            regularSpeed = 0.75f;
+            boostSpeed = 1.0f;
+            brakeSpeed = 0.5f;
+        } 
+        
+        else if (GlobalsManager.shipSelected == ShipSelected.Ben)
 
-            var localVelocity = transform.InverseTransformDirection(rigidbody2D.velocity);
-            velocity.x = localVelocity.x;
-            velocity.y = localVelocity.y;
+        {
+            regularSpeed = 0.9f;
+            boostSpeed = 1.15f;
+            brakeSpeed = 0.65f;
+        } 
+        
+        else if (GlobalsManager.shipSelected == ShipSelected.Thoraxx)
 
-            var v = transform.TransformDirection(velocity);
-            velocity.Set(v.x, v.y);
-
-            //rewired get button boost
-            //rewired get button brake
+        {
+            regularSpeed = 0.6f;
+            boostSpeed = 0.75f;
+            brakeSpeed = 0.35f;
         }
-    
-    void Boost()
-    
-    {
-            bool boost = true;
-            bool brake = false;
-            bool regular = false;
 
-            //movement
-            //rewired get button boost
-            //rewired get button brake
-            //check meter int compare 0
     }
 
-    void Brake()
-    
+    void Update ()
+
     {
-            bool boost = false;
-            bool brake = true;
-            bool regular = false;
-            //check meter int compare 0
+        GetInput ();
+        ProcessInput ();
+
+        if (GlobalsManager.gameState == GameState.Game)
+
+        {
+            transform.position += transform.right * Time.deltaTime * Speed;
+        }
     }
 
-    private void GameOver()
-    
+    void GetInput ()
+
     {
-        Health.GameOver -= GameOver;
+        boost = player.GetButtonDown ("Brake");
+        brake = player.GetButtonDown ("Boost");
     }
 
-    private void OnDisable() 
-    
+    void ProcessInput ()
+
     {
-        Health.GameOver -= GameOver;
+        if (boost)
+
+        {
+            Speed = boostSpeed;
+        } 
+        
+        else if (brake)
+
+        {
+            Speed = brakeSpeed;
+        } 
+        
+        else if (!boost && !brake)
+
+        {
+            Speed = regularSpeed;
+        }
     }
-    
+    void BoostAndBreakMeterEmpty ()
+
+    {
+        //set FSM rotation rotationmultiplier float 1
+        bool boost = false;
+        bool brake = false;
+        bool regular = true;
+
+        //rewired get button boost
+        //rewired get button brake
+    }
+
+    private void Boost ()
+
+    {
+        bool boost = true;
+        bool brake = false;
+        bool regular = false;
+
+        //movement
+        //rewired get button boost
+        //rewired get button brake
+        //check meter int compare 0
+    }
+
+    private void Brake ()
+
+    {
+        bool boost = false;
+        bool brake = true;
+        bool regular = false;
+        //check meter int compare 0
+    }
+
+    private void GameOver ()
+
+    {
+
+    }
+
+    private void OnDisable ()
+
+    {
+        Health.OnGameOver -= GameOver;
+    }
+
 }
