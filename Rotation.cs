@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Rewired;
 using UnityEngine;
 
-public class Rotation : MonoBehaviour {
+public class Rotation : MonoBehaviour
+
+{
     private int playerId = 0;
     private Player player;
     private bool left = false;
@@ -11,52 +13,55 @@ public class Rotation : MonoBehaviour {
     public float zAngle;
     public Vector3 rotate;
 
-    [Range(0.0f, 10.0f)]
+    [Range (0.0f, 10.0f)]
     public float rotationSpeed;
 
-    void Start ()
+    void OnEnable ()
 
     {
         player = ReInput.players.GetPlayer (playerId);
     }
 
-    
-    void Update () 
-    
+    void Update ()
+
     {
-    
-        GetInput ();
-        ProcessInput ();
+        //get and process rotation input only when the gameState is Game
+
+        if (GlobalsManager.gameState == GameState.Game) 
+        
+        {
+            GetInput ();
+            ProcessInput ();
+        }
     }
 
-    void GetInput () 
-    
-    { 
+    void GetInput ()
+
+    {
         left = player.GetButton ("Left");
         right = player.GetButton ("Right");
-
     }
 
+    void ProcessInput ()
 
-    void ProcessInput () 
-    
-    { 
-        if (left)
+    {
+            if (left)
 
-        {
-            zAngle = transform.rotation.z;
-            zAngle += rotationSpeed;
-            rotate = new Vector3 (0.0f, 0.0f, zAngle);
-            transform.Rotate(rotate, Space.World);
-        }
+            {
+                zAngle = transform.rotation.z;
+                zAngle += rotationSpeed;
+                rotate = new Vector3 (0.0f, 0.0f, zAngle);
+                transform.Rotate (rotate, Space.World);
+            }
 
-        if (right)
+            if (right)
 
-        {
-            zAngle = transform.rotation.z;
-            zAngle -= rotationSpeed;
-            rotate = new Vector3 (0.0f, 0.0f, zAngle);
-            transform.Rotate(rotate, Space.World);
+            {
+                zAngle = transform.rotation.z;
+                zAngle -= rotationSpeed;
+                rotate = new Vector3 (0.0f, 0.0f, zAngle);
+                transform.Rotate (rotate, Space.World);
+            }
         }
     }
-}
+

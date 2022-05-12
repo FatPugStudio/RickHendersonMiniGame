@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using DarkTonic.CoreGameKit;
 using UnityEngine;
 
-public class DamageSystem : MonoBehaviour {
+public class DamageSystem : MonoBehaviour
+{
 
     public float hitPoints;
     public int score;
 
-    public bool alreadyDestroyed;
+    public bool isDestroyed;
     public Transform jet;
     public Transform circleExplosion;
     public Transform genericExplosion;
@@ -24,7 +25,7 @@ public class DamageSystem : MonoBehaviour {
     void Start ()
 
     {
-        alreadyDestroyed = false;
+        isDestroyed = false;
         jet = transform.GetChild (0);
         int score = (int) hitPoints;
     }
@@ -34,7 +35,7 @@ public class DamageSystem : MonoBehaviour {
     {
         hitPoints = hitPoints - bulletDamage;
 
-        if (hitPoints <= 0 && !alreadyDestroyed)
+        if (hitPoints <= 0 && !isDestroyed)
 
         {
             AddScore ();
@@ -45,7 +46,18 @@ public class DamageSystem : MonoBehaviour {
     void DestroyedByBomb ()
 
     {
-        AddScore ();
+        if (GlobalsManager.bossPresent)
+
+        {
+            GlobalsManager.score += score;
+            ScoreListener.limitAdd += score;
+            DestroySelf ();
+        }
+
+        else
+
+            GlobalsManager.score += score;
+        DestroySelf ();
     }
 
     void AddScore ()
@@ -57,18 +69,18 @@ public class DamageSystem : MonoBehaviour {
             GlobalsManager.score += score;
             ScoreListener.limitAdd += score;
             DestroySelf ();
-        } 
-        
+        }
+
         else
 
-        GlobalsManager.score += score;
+            GlobalsManager.score += score;
         DestroySelf ();
     }
-    
+
     void DestroySelf ()
 
     {
-        if (alreadyDestroyed)
+        if (isDestroyed)
 
         {
             return;
@@ -76,11 +88,11 @@ public class DamageSystem : MonoBehaviour {
 
         else
 
-        //get enemy position for spawning explosion
-        enemyPosition = transform.position;
+            //get enemy position for spawning explosion
+            enemyPosition = transform.position;
 
         //set that the enemy is already destroyed in case of enemy hit before death processing
-        alreadyDestroyed = true;
+        isDestroyed = true;
 
         //spawn explosions
         DarkTonic.CoreGameKit.PoolBoss.Spawn (circleExplosion, enemyPosition, rotationQuaternion, null);
@@ -96,6 +108,12 @@ public class DamageSystem : MonoBehaviour {
         DarkTonic.CoreGameKit.PoolBoss.Despawn (jet, false);
         DarkTonic.CoreGameKit.PoolBoss.Despawn (this.gameObject.transform, false);
 
+    }
+
+    void Restart ()
+
+    {
+        DestroySelf ();
     }
 
 }

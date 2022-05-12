@@ -11,11 +11,11 @@ public class MainMenuController : MonoBehaviour
 {
     //events & delegates
 
-    public delegate void StartGame();
+    public delegate void StartGame ();
     public static event StartGame OnGameStart;
-    
+
     // rewired
-    
+
     private int playerId = 0;
     private Player player;
     private bool down = false;
@@ -25,59 +25,80 @@ public class MainMenuController : MonoBehaviour
     private bool fire = false;
     private bool back = false;
 
+    //Menu Game Objects
+
     public GameObject mainMenu;
     public GameObject shipSelectionMenu;
     public GameObject deathMenu;
     public GameObject pauseMenu;
     public GameObject leaderboardsMenu;
     public GameObject optionsMenu;
-    public SpriteRenderer selectedShipImage;
+
+    [SerializeField] public SpriteRenderer selectedShipImage;
 
     public Sprite rickShip;
     public Sprite benShip;
     public Sprite thoraxxShip;
 
-    [SerializeField]
-    private bool startGameSelected = false;
-    [SerializeField]
-    private bool optionsSelected = false;
-    [SerializeField]
-    private bool quitSelected = false;
-    [SerializeField]
-    private bool leaderboardsSelected = false;
-    [SerializeField]
-    private bool volumeSelected = false;
-    [SerializeField]
-    private bool backgroundSelected = false;
-    [SerializeField]
-    private bool rickSelected = false;
-    [SerializeField]
-    private bool benSelected = false;
-    [SerializeField]
-    private bool thoraxxSelected = false;
+    //Main Menu
+    [SerializeField] private bool startGameSelected = false;
+    [SerializeField] private bool optionsSelected = false;
+    [SerializeField] private bool quitSelected = false;
+    [SerializeField] private bool leaderboardsSelected = false;
 
+    //Main Menu Options
+    [SerializeField] private bool volumeSelected = false;
+    [SerializeField] private bool backgroundSelected = false;
+
+    //Pause Menu Options
+    [SerializeField] private bool resumeSelected = false;
+    [SerializeField] private bool restartPauseMenuSelected = false;
+    [SerializeField] private bool optionsPauseMenuSelected = false;
+    [SerializeField] private bool mainMenuPauseMenuSelected = false;
+
+    //Death Menu Options
+
+    [SerializeField] private bool restartDeathMenuSelected;
+    [SerializeField] private bool leaderboardsDeathMenuSelected;
+    [SerializeField] private bool mainMenuDeathMenuSelected;
+
+    //Ship Selection
+    [SerializeField] private bool rickSelected = false;
+    [SerializeField] private bool benSelected = false;
+    [SerializeField] private bool thoraxxSelected = false;
+
+    //Menu Colors
     public Color highlightedColor = Color.clear;
     public Color dimmedColor = Color.clear;
 
+    //Main Menu Buttons
     public GameObject startGameButton;
     public GameObject leaderboardsButtonMainMenu;
     public GameObject optionsButton;
     public GameObject quitButton;
+
+    //Ship Selection Items
     public GameObject pilotName;
     public GameObject movementSpeed;
     public GameObject rotationSpeed;
     public GameObject health;
     public GameObject ammo;
     public GameObject shieldDuration;
+
+    //Death Menu Buttons
     public GameObject leaderboardsButtonDeathMenu;
     public GameObject restartButtonDeathMenu;
     public GameObject mainMenuButtonDeathMenu;
     public GameObject resumeGameButton;
+
+    //Pause Menu Buttons
     public GameObject restartButtonPauseMenu;
     public GameObject optionsPauseButton;
     public GameObject mainMenuButtonPauseMenu;
     public GameObject volumeButton;
     public GameObject backgroundButton;
+
+    //Options Menu Buttons
 
     private TextMeshProUGUI startGameButtonTMP;
     private TextMeshProUGUI leaderboardsButtonMainMenuTMP;
@@ -112,21 +133,12 @@ public class MainMenuController : MonoBehaviour
 
     private void Start ()
 
-    {   
+    {
         startGameSelected = true;
 
         //Get PlayerId
 
         player = ReInput.players.GetPlayer (playerId);
-
-        //Get canvas components
-
-        //mainMenuCanvasCanvas = mainMenuCanvas.GetComponent<Canvas> ();
-        //shipSelectionCanvasCanvas = shipSelectionCanvas.GetComponent<Canvas> ();
-        //deathMenuCanvasCanvas = deathMenuCanvas.GetComponent<Canvas> ();
-        //pauseMenuCanvasCanvas = pauseMenuCanvas.GetComponent<Canvas> ();
-        //leaderboardCanvasCanvas = leaderboardsCanvas.GetComponent<Canvas> ();
-        //optionsCanvasCanvas = optionsCanvas.GetComponent<Canvas> ();
 
         //Get TMP components
 
@@ -153,6 +165,12 @@ public class MainMenuController : MonoBehaviour
         MainMenu ();
     }
 
+    private void OnEnable ()
+
+    {
+        selectedShipImage.enabled = false;
+    }
+
     private void MainMenu ()
 
     {
@@ -162,6 +180,7 @@ public class MainMenuController : MonoBehaviour
     private void Update ()
 
     {
+
         GetInput ();
         ProcessInput ();
     }
@@ -169,428 +188,631 @@ public class MainMenuController : MonoBehaviour
     void GetInput ()
 
     {
-        // if (GlobalsManager.gameState != GameState.Game)
 
-        // {
-            
         down = player.GetButtonDown ("Brake");
         up = player.GetButtonDown ("Boost");
         left = player.GetButtonDown ("Left");
         right = player.GetButtonDown ("Right");
         fire = player.GetButtonDown ("Fire");
         back = player.GetButtonDown ("Escape");
-        
-        // }
 
     }
 
-    void ProcessInput () 
-    
+    void ProcessInput ()
+
     {
-        
-        if (GlobalsManager.gameState != GameState.Game)
-        
-        {
-        
-        if (down) 
-        
-        {
-            if (startGameSelected)
 
-            {
-                startGameSelected = false;
-                quitSelected = false;
-                optionsSelected = false;
-                leaderboardsSelected = true;
-                quitButtonTMP.color = dimmedColor;
-                optionsButtonTMP.color = dimmedColor;
-                startGameButtonTMP.color = dimmedColor;
-                leaderboardsButtonMainMenuTMP.color = highlightedColor;
-            } 
-            
-            else if (leaderboardsSelected)
-
-            {
-                startGameSelected = false;
-                quitSelected = false;
-                optionsSelected = true;
-                leaderboardsSelected = false;
-                quitButtonTMP.color = dimmedColor;
-                optionsButtonTMP.color = highlightedColor;
-                startGameButtonTMP.color = dimmedColor;
-                leaderboardsButtonMainMenuTMP.color = dimmedColor;
-            } 
-            
-            else if (optionsSelected)
-
-            {
-                startGameSelected = false;
-                quitSelected = true;
-                optionsSelected = false;
-                leaderboardsSelected = false;
-                quitButtonTMP.color = highlightedColor;
-                optionsButtonTMP.color = dimmedColor;
-                startGameButtonTMP.color = dimmedColor;
-                leaderboardsButtonMainMenuTMP.color = dimmedColor;
-            } 
-            
-            else if (quitSelected)
-
-            {
-                startGameSelected = true;
-                quitSelected = false;
-                optionsSelected = false;
-                leaderboardsSelected = false;
-                quitButtonTMP.color = dimmedColor;
-                optionsButtonTMP.color = dimmedColor;
-                startGameButtonTMP.color = highlightedColor;
-                leaderboardsButtonMainMenuTMP.color = dimmedColor;
-            }
-
-            else if (volumeSelected)
-
-            {
-                volumeSelected = false;
-                backgroundSelected = true;
-                volumeButtonTMP.color = dimmedColor;
-                backgroundButtonTMP.color = highlightedColor;
-            }
-
-            else if (backgroundSelected)
-
-            {
-                backgroundSelected = false;
-                volumeSelected = true;
-                volumeButtonTMP.color = highlightedColor;
-                backgroundButtonTMP.color = dimmedColor;
-            }
-
-        } 
-        
-        else if (up)
+        if (GlobalsManager.gameState == GameState.MainMenu)
 
         {
-            if (startGameSelected)
+
+            if (down)
 
             {
-                startGameSelected = false;
-                quitSelected = true;
-                optionsSelected = false;
-                leaderboardsSelected = false;
-                quitButtonTMP.color = highlightedColor;
-                optionsButtonTMP.color = dimmedColor;
-                startGameButtonTMP.color = dimmedColor;
-                leaderboardsButtonMainMenuTMP.color = dimmedColor;
-            } 
-            
-            else if (leaderboardsSelected)
 
-            {
-                startGameSelected = true;
-                quitSelected = false;
-                optionsSelected = false;
-                leaderboardsSelected = false;
-                quitButtonTMP.color = dimmedColor;
-                optionsButtonTMP.color = dimmedColor;
-                startGameButtonTMP.color = highlightedColor;
-                leaderboardsButtonMainMenuTMP.color = dimmedColor;
-            } 
-            
-            else if (optionsSelected)
+                if (startGameSelected)
 
-            {
-                startGameSelected = false;
-                quitSelected = false;
-                optionsSelected = false;
-                leaderboardsSelected = true;
-                quitButtonTMP.color = dimmedColor;
-                optionsButtonTMP.color = dimmedColor;
-                startGameButtonTMP.color = dimmedColor;
-                leaderboardsButtonMainMenuTMP.color = highlightedColor;
-            } 
-            
-            else if (quitSelected)
-
-            {
-                startGameSelected = false;
-                quitSelected = false;
-                optionsSelected = true;
-                leaderboardsSelected = false;
-                quitButtonTMP.color = dimmedColor;
-                optionsButtonTMP.color = highlightedColor;
-                startGameButtonTMP.color = dimmedColor;
-                leaderboardsButtonMainMenuTMP.color = dimmedColor;
-            }
-
-            else if (volumeSelected)
-
-            {
-                volumeSelected = false;
-                backgroundSelected = true;
-                volumeButtonTMP.color = dimmedColor;
-                backgroundButtonTMP.color = highlightedColor;
-            }
-
-            else if (backgroundSelected)
-
-            {
-                backgroundSelected = false;
-                volumeSelected = true;
-                volumeButtonTMP.color = highlightedColor;
-                backgroundButtonTMP.color = dimmedColor;
-            }
-        } 
-        
-        else if (fire)
-
-        {
-            if (startGameSelected)
-
-            {
-                startGameSelected = false;
-                shipSelectionMenu.SetActive (true);
-                mainMenu.SetActive (false);
-                rickSelected = true;
-                benSelected = false;
-                thoraxxSelected = false;
-                selectedShipImage.sprite = rickShip;
-                pilotNameTMP.SetText ("RICK HENDERSON", false);
-                Debug.Log ("pilot text set");
-                movementSpeedTMP.SetText ("RICK MOVEMENT SPEED", false);
-                Debug.Log ("movement text set");
-                rotationSpeedTMP.SetText ("RICK ROTATION SPEED", false);
-                Debug.Log ("rotation text set");
-                healthTMP.SetText ("RICK HEALTH", false);
-                Debug.Log ("health text set");
-                ammoTMP.SetText ("RICK AMMO", false);
-                shieldDurationTMP.SetText ("RICK SHIELD DURATION", false);
-
-            } 
-            
-            else if (leaderboardsSelected)
-
-            {
-                GlobalsManager.gameState = GameState.Leaderboards;
-                leaderboardsMenu.SetActive (true);
-                mainMenu.SetActive (false);
-            } 
-            
-            else if (optionsSelected) 
-            
-            {
-                GlobalsManager.gameState = GameState.OptionsMenu;
-                optionsMenu.SetActive (true);
-                mainMenu.SetActive (false);
-                volumeButtonTMP.color = highlightedColor;
-                volumeSelected = true;
-                optionsSelected = false;
-            } 
-            
-            else if (quitSelected)
-
-            {
-                Application.Quit ();
-
-            }
-
-            else if (rickSelected || benSelected || thoraxxSelected)
-            
-            {
-                rickSelected = false;
-                benSelected = false;
-                thoraxxSelected = false;
-
-                GlobalsManager.gameState = GameState.Game;
-                shipSelectionMenu.SetActive(false);                
-                
-                //send OnGameStart event to subscribers
-
-                if (OnGameStart != null)
-                
                 {
-                    OnGameStart();
+                    startGameSelected = false;
+                    quitSelected = false;
+                    optionsSelected = false;
+                    leaderboardsSelected = true;
+                    quitButtonTMP.color = dimmedColor;
+                    optionsButtonTMP.color = dimmedColor;
+                    startGameButtonTMP.color = dimmedColor;
+                    leaderboardsButtonMainMenuTMP.color = highlightedColor;
+                }
+
+                else if (leaderboardsSelected)
+
+                {
+                    startGameSelected = false;
+                    quitSelected = false;
+                    optionsSelected = true;
+                    leaderboardsSelected = false;
+                    quitButtonTMP.color = dimmedColor;
+                    optionsButtonTMP.color = highlightedColor;
+                    startGameButtonTMP.color = dimmedColor;
+                    leaderboardsButtonMainMenuTMP.color = dimmedColor;
+                }
+
+                else if (optionsSelected)
+
+                {
+                    startGameSelected = false;
+                    quitSelected = true;
+                    optionsSelected = false;
+                    leaderboardsSelected = false;
+                    quitButtonTMP.color = highlightedColor;
+                    optionsButtonTMP.color = dimmedColor;
+                    startGameButtonTMP.color = dimmedColor;
+                    leaderboardsButtonMainMenuTMP.color = dimmedColor;
+                }
+
+                else if (quitSelected)
+
+                {
+                    startGameSelected = true;
+                    quitSelected = false;
+                    optionsSelected = false;
+                    leaderboardsSelected = false;
+                    quitButtonTMP.color = dimmedColor;
+                    optionsButtonTMP.color = dimmedColor;
+                    startGameButtonTMP.color = highlightedColor;
+                    leaderboardsButtonMainMenuTMP.color = dimmedColor;
+                }
+
+                else if (volumeSelected)
+
+                {
+                    volumeSelected = false;
+                    backgroundSelected = true;
+                    volumeButtonTMP.color = dimmedColor;
+                    backgroundButtonTMP.color = highlightedColor;
+                }
+
+                else if (backgroundSelected)
+
+                {
+                    backgroundSelected = false;
+                    volumeSelected = true;
+                    volumeButtonTMP.color = highlightedColor;
+                    backgroundButtonTMP.color = dimmedColor;
+                }
+
+            }
+
+            else if (up)
+
+            {
+                if (startGameSelected)
+
+                {
+                    startGameSelected = false;
+                    quitSelected = true;
+                    optionsSelected = false;
+                    leaderboardsSelected = false;
+                    quitButtonTMP.color = highlightedColor;
+                    optionsButtonTMP.color = dimmedColor;
+                    startGameButtonTMP.color = dimmedColor;
+                    leaderboardsButtonMainMenuTMP.color = dimmedColor;
+                }
+
+                else if (leaderboardsSelected)
+
+                {
+                    startGameSelected = true;
+                    quitSelected = false;
+                    optionsSelected = false;
+                    leaderboardsSelected = false;
+                    quitButtonTMP.color = dimmedColor;
+                    optionsButtonTMP.color = dimmedColor;
+                    startGameButtonTMP.color = highlightedColor;
+                    leaderboardsButtonMainMenuTMP.color = dimmedColor;
+                }
+
+                else if (optionsSelected)
+
+                {
+                    startGameSelected = false;
+                    quitSelected = false;
+                    optionsSelected = false;
+                    leaderboardsSelected = true;
+                    quitButtonTMP.color = dimmedColor;
+                    optionsButtonTMP.color = dimmedColor;
+                    startGameButtonTMP.color = dimmedColor;
+                    leaderboardsButtonMainMenuTMP.color = highlightedColor;
+                }
+
+                else if (quitSelected)
+
+                {
+                    startGameSelected = false;
+                    quitSelected = false;
+                    optionsSelected = true;
+                    leaderboardsSelected = false;
+                    quitButtonTMP.color = dimmedColor;
+                    optionsButtonTMP.color = highlightedColor;
+                    startGameButtonTMP.color = dimmedColor;
+                    leaderboardsButtonMainMenuTMP.color = dimmedColor;
+                }
+
+                else if (volumeSelected)
+
+                {
+                    volumeSelected = false;
+                    backgroundSelected = true;
+                    volumeButtonTMP.color = dimmedColor;
+                    backgroundButtonTMP.color = highlightedColor;
+                }
+
+                else if (backgroundSelected)
+
+                {
+                    backgroundSelected = false;
+                    volumeSelected = true;
+                    volumeButtonTMP.color = highlightedColor;
+                    backgroundButtonTMP.color = dimmedColor;
                 }
             }
 
-        } 
-        
-        else if (left)
-
-        {
-            if (benSelected)
+            else if (fire)
 
             {
-                //If ben selected and press left, select thoraxx
+                if (startGameSelected)
 
-                GlobalsManager.shipSelected = ShipSelected.Ben;
-                rickSelected = false;
-                benSelected = false;
-                thoraxxSelected = true;
-                selectedShipImage.sprite = thoraxxShip;
-                pilotNameTMP.SetText ("THORAXX", false);
-                movementSpeedTMP.SetText ("THORAXX MOVEMENT SPEED", false);
-                rotationSpeedTMP.SetText ("THORAXX ROTATION SPEED", false);
-                healthTMP.SetText ("THORAXX HEALTH", false);
-                ammoTMP.SetText ("THORAXX AMMO", false);
-                shieldDurationTMP.SetText ("THORAXX SHIELD DURATION", false);
-            } 
-            
-            else if (rickSelected)
+                {
+                    GlobalsManager.gameState = GameState.ShipSelection;
+                    startGameSelected = false;
+                    selectedShipImage.enabled = true;
+                    rickSelected = true;
+                    benSelected = false;
+                    thoraxxSelected = false;
 
-            {
-                //if rick selected and press left, select ben
+                    //Set stats
+                    selectedShipImage.sprite = rickShip;
+                    pilotNameTMP.SetText ("RICK HENDERSON", false);
+                    movementSpeedTMP.SetText ("RICK MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText ("RICK ROTATION SPEED", false);
+                    healthTMP.SetText ("RICK HEALTH", false);
+                    ammoTMP.SetText ("RICK AMMO", false);
+                    shieldDurationTMP.SetText ("RICK SHIELD DURATION", false);
 
-                GlobalsManager.shipSelected = ShipSelected.Rick;
-                rickSelected = false;
-                benSelected = true;
-                thoraxxSelected = false;
-                selectedShipImage.sprite = benShip;
-                pilotNameTMP.SetText ("BEN X9", false);
-                movementSpeedTMP.SetText ("BEN MOVEMENT SPEED", false);
-                rotationSpeedTMP.SetText ("BEN ROTATION SPEED", false);
-                healthTMP.SetText ("BEN HEALTH", false);
-                ammoTMP.SetText ("BEN AMMO", false);
-                shieldDurationTMP.SetText ("BEN SHIELD DURATION", false);
-            } 
-            
-            else if (thoraxxSelected)
+                    //Activate Menu Elements
+                    mainMenu.SetActive (false);
+                    shipSelectionMenu.SetActive (true);
 
-            {
-                //if thoraxx selected and press left, select rick
+                }
 
-                GlobalsManager.shipSelected = ShipSelected.Thoraxx;
-                rickSelected = true;
-                benSelected = false;
-                thoraxxSelected = false;
-                selectedShipImage.sprite = rickShip;
-                pilotNameTMP.SetText ("RICK HENDERSON", false);
-                movementSpeedTMP.SetText ("RICK MOVEMENT SPEED", false);
-                rotationSpeedTMP.SetText ("RICK ROTATION SPEED", false);
-                healthTMP.SetText ("RICK HEALTH", false);
-                ammoTMP.SetText ("RICK AMMO", false);
-                shieldDurationTMP.SetText ("RICK SHIELD DURATION", false);
+                else if (leaderboardsSelected)
+
+                {
+                    GlobalsManager.gameState = GameState.Leaderboards;
+
+                    //Activate Menu Elements
+                    leaderboardsMenu.SetActive (true);
+                    mainMenu.SetActive (false);
+                }
+
+                else if (optionsSelected)
+
+                {
+                    GlobalsManager.gameState = GameState.OptionsMenu;
+
+                    //Activate Menu Elements
+                    optionsMenu.SetActive (true);
+                    mainMenu.SetActive (false);
+
+                    volumeButtonTMP.color = highlightedColor;
+                    volumeSelected = true;
+                    optionsSelected = false;
+                }
+
+                else if (quitSelected)
+
+                {
+                    Application.Quit ();
+
+                }
+
             }
 
-        } 
-        
-        else if (right)
-
-        {
-            if (benSelected)
-
-            {
-                //if ben selected and press right, select rick
-
-                GlobalsManager.shipSelected = ShipSelected.Ben;
-                rickSelected = true;
-                benSelected = false;
-                thoraxxSelected = false;
-                selectedShipImage.sprite = rickShip;
-                pilotNameTMP.SetText ("RICK HENDERSON", false);
-                movementSpeedTMP.SetText ("RICK MOVEMENT SPEED", false);
-                rotationSpeedTMP.SetText ("RICK ROTATION SPEED", false);
-                healthTMP.SetText ("RICK HEALTH", false);
-                ammoTMP.SetText ("RICK AMMO", false);
-                shieldDurationTMP.SetText ("RICK SHIELD DURATION", false);
-
-            } 
-            
-            else if (rickSelected)
-
-            {
-                //if rick selected and press right, select thoraxx
-
-                GlobalsManager.shipSelected = ShipSelected.Ben;
-                rickSelected = false;
-                benSelected = false;
-                thoraxxSelected = true;
-                selectedShipImage.sprite = thoraxxShip;
-                pilotNameTMP.SetText ("THORAXX", false);
-                movementSpeedTMP.SetText ("THORAXX MOVEMENT SPEED", false);
-                rotationSpeedTMP.SetText ("THORAXX ROTATION SPEED", false);
-                healthTMP.SetText ("THORAXX HEALTH", false);
-                ammoTMP.SetText ("THORAXX AMMO", false);
-                shieldDurationTMP.SetText ("THORAXX SHIELD DURATION", false);
-
-            } 
-            
-            else if (thoraxxSelected)
-
-            {
-                //if thoraxx selected and press right, select ben
-
-                GlobalsManager.shipSelected = ShipSelected.Thoraxx;
-                benSelected = true;
-                thoraxxSelected = false;
-                selectedShipImage.sprite = benShip;
-                pilotNameTMP.SetText ("BEN X9", false);
-                movementSpeedTMP.SetText ("BEN MOVEMENT SPEED", false);
-                rotationSpeedTMP.SetText ("BEN ROTATION SPEED", false);
-                healthTMP.SetText ("BEN HEALTH", false);
-                ammoTMP.SetText ("BEN AMMO", false);
-                shieldDurationTMP.SetText ("BEN SHIELD DURATION", false);
-            }
         }
 
-        else if (back)
+        #region Options Menu
+
+        else if (GlobalsManager.gameState == GameState.OptionsMenu)
 
         {
-            if (GlobalsManager.gameState == GameState.PauseMenu)
+            GlobalsManager.gameState = GameState.MainMenu;
+
+            //Activate Menu Elements
+            optionsMenu.SetActive (false);
+            mainMenu.SetActive (true);
+
+            //uradi gore dole levo desno i back
+        }
+
+        #endregion
+
+        #region Ship Selection Menu
+
+        else if (GlobalsManager.gameState == GameState.ShipSelection)
+
+        {
+            if (left)
+
+            {
+
+                if (benSelected)
+
+                {
+                    //If ben selected and press left, select thoraxx
+
+                    GlobalsManager.shipSelected = ShipSelected.Thoraxx;
+                    rickSelected = false;
+                    benSelected = false;
+                    thoraxxSelected = true;
+                    selectedShipImage.sprite = thoraxxShip;
+                    pilotNameTMP.SetText ("THORAXX", false);
+                    movementSpeedTMP.SetText ("THORAXX MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText ("THORAXX ROTATION SPEED", false);
+                    healthTMP.SetText ("THORAXX HEALTH", false);
+                    ammoTMP.SetText ("THORAXX AMMO", false);
+                    shieldDurationTMP.SetText ("THORAXX SHIELD DURATION", false);
+
+                }
+
+                else if (rickSelected)
+
+                {
+                    //if rick selected and press left, select ben
+
+                    GlobalsManager.shipSelected = ShipSelected.Ben;
+                    rickSelected = false;
+                    benSelected = true;
+                    thoraxxSelected = false;
+                    selectedShipImage.sprite = benShip;
+                    pilotNameTMP.SetText ("BEN X9", false);
+                    movementSpeedTMP.SetText ("BEN MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText ("BEN ROTATION SPEED", false);
+                    healthTMP.SetText ("BEN HEALTH", false);
+                    ammoTMP.SetText ("BEN AMMO", false);
+                    shieldDurationTMP.SetText ("BEN SHIELD DURATION", false);
+
+                }
+
+                else if (thoraxxSelected)
+
+                {
+                    //if thoraxx selected and press left, select rick
+
+                    GlobalsManager.shipSelected = ShipSelected.Rick;
+                    rickSelected = true;
+                    benSelected = false;
+                    thoraxxSelected = false;
+                    selectedShipImage.sprite = rickShip;
+                    pilotNameTMP.SetText ("RICK HENDERSON", false);
+                    movementSpeedTMP.SetText ("RICK MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText ("RICK ROTATION SPEED", false);
+                    healthTMP.SetText ("RICK HEALTH", false);
+                    ammoTMP.SetText ("RICK AMMO", false);
+                    shieldDurationTMP.SetText ("RICK SHIELD DURATION", false);
+
+                }
+            }
+
+            else if (right)
+
+            {
+                if (benSelected)
+
+                {
+                    //if ben selected and press right, select rick
+
+                    GlobalsManager.shipSelected = ShipSelected.Rick;
+                    rickSelected = true;
+                    benSelected = false;
+                    thoraxxSelected = false;
+                    selectedShipImage.sprite = rickShip;
+                    pilotNameTMP.SetText ("RICK HENDERSON", false);
+                    movementSpeedTMP.SetText ("RICK MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText ("RICK ROTATION SPEED", false);
+                    healthTMP.SetText ("RICK HEALTH", false);
+                    ammoTMP.SetText ("RICK AMMO", false);
+                    shieldDurationTMP.SetText ("RICK SHIELD DURATION", false);
+
+                }
+
+                else if (rickSelected)
+
+                {
+                    //if rick selected and press right, select thoraxx
+
+                    GlobalsManager.shipSelected = ShipSelected.Thoraxx;
+                    rickSelected = false;
+                    benSelected = false;
+                    thoraxxSelected = true;
+                    selectedShipImage.sprite = thoraxxShip;
+                    pilotNameTMP.SetText ("THORAXX", false);
+                    movementSpeedTMP.SetText ("THORAXX MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText ("THORAXX ROTATION SPEED", false);
+                    healthTMP.SetText ("THORAXX HEALTH", false);
+                    ammoTMP.SetText ("THORAXX AMMO", false);
+                    shieldDurationTMP.SetText ("THORAXX SHIELD DURATION", false);
+                    Debug.LogError ("Ship Selected is " + GlobalsManager.shipSelected);
+
+                }
+
+                else if (thoraxxSelected)
+
+                {
+                    //if thoraxx selected and press right, select ben
+
+                    GlobalsManager.shipSelected = ShipSelected.Ben;
+                    benSelected = true;
+                    thoraxxSelected = false;
+                    selectedShipImage.sprite = benShip;
+                    pilotNameTMP.SetText ("BEN X9", false);
+                    movementSpeedTMP.SetText ("BEN MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText ("BEN ROTATION SPEED", false);
+                    healthTMP.SetText ("BEN HEALTH", false);
+                    ammoTMP.SetText ("BEN AMMO", false);
+                    shieldDurationTMP.SetText ("BEN SHIELD DURATION", false);
+                    Debug.LogError ("Ship Selected is " + GlobalsManager.shipSelected);
+                }
+            }
+
+            else if (fire)
 
             {
                 GlobalsManager.gameState = GameState.Game;
-                pauseMenu.SetActive(false);
-                Time.timeScale = 1;
+                shipSelectionMenu.SetActive (false);
+
+                if (OnGameStart != null)
+
+                {
+                    OnGameStart ();
+                }
             }
 
-            else if (GlobalsManager.gameState == GameState.OptionsMenu)
+            else if (back)
 
             {
                 GlobalsManager.gameState = GameState.MainMenu;
-                optionsMenu.SetActive(false);
-                mainMenu.SetActive(true);
+                shipSelectionMenu.SetActive (false);
+                mainMenu.SetActive (true);
             }
-
-            else if (GlobalsManager.gameState == GameState.ShipSelection)
-
-            {
-                GlobalsManager.gameState = GameState.MainMenu;
-                shipSelectionMenu.SetActive(false);
-                mainMenu.SetActive(true);
-            }
-
-            else if (GlobalsManager.gameState == GameState.Leaderboards)
-
-            {
-                GlobalsManager.gameState = GameState.MainMenu;
-                leaderboardsMenu.SetActive(false);
-                mainMenu.SetActive(true);
-            }
-
-            // else if (GlobalsManager.gameState == GameState.Game)
-
-            // {
-            //     GlobalsManager.gameState = GameState.PauseMenu;
-            //     pauseMenu.SetActive(true);
-            //     Time.timeScale = 0;
-            // }
 
         }
 
-    }
+        #endregion
+
+        #region Leaderboards
+
+        else if (GlobalsManager.gameState == GameState.Leaderboards)
+
+        {
+            leaderboardsMenu.SetActive (false);
+            mainMenu.SetActive (true);
+
+            if (back)
+
+            {
+                leaderboardsMenu.SetActive (false);
+                mainMenu.SetActive (true);
+            }
+        }
+
+        #endregion
+
+        #region Pause Menu
+
+        else if (GlobalsManager.gameState == GameState.PauseMenu)
+
+        {
+
+            if (up)
+
+            {
+
+                if (resumeSelected)
+
+                {
+                    mainMenuButtonPauseMenuTMP.color = highlightedColor;
+                    resumeGameButtonTMP.color = dimmedColor;
+                    mainMenuPauseMenuSelected = true;
+                    resumeSelected = false;
+                }
+
+                else if (restartPauseMenuSelected)
+
+                {
+                    resumeGameButtonTMP.color = highlightedColor;
+                    restartButtonPauseMenuTMP.color = dimmedColor;
+                    resumeSelected = true;
+                    restartPauseMenuSelected = false;
+                }
+
+                else if (optionsPauseMenuSelected)
+
+                {
+                    restartButtonPauseMenuTMP.color = highlightedColor;
+                    optionsPauseButtonTMP.color = dimmedColor;
+                    restartPauseMenuSelected = true;
+                    optionsPauseMenuSelected = false;
+                }
+
+                else if (mainMenuPauseMenuSelected)
+
+                {
+                    optionsPauseButtonTMP.color = highlightedColor;
+                    mainMenuButtonPauseMenuTMP.color = dimmedColor;
+                    optionsPauseMenuSelected = true;
+                    mainMenuPauseMenuSelected = false;
+                }
+            }
+
+            if (down)
+
+            {
+                if (resumeSelected)
+
+                {
+                    resumeGameButtonTMP.color = dimmedColor;
+                    restartButtonPauseMenuTMP.color = highlightedColor;
+                    restartPauseMenuSelected = true;
+                    resumeSelected = false;
+
+                }
+
+                else if (restartPauseMenuSelected)
+
+                {
+                    restartButtonPauseMenuTMP.color = dimmedColor;
+                    optionsPauseButtonTMP.color = highlightedColor;
+                    optionsPauseMenuSelected = true;
+                    restartPauseMenuSelected = false;
+                }
+
+                else if (optionsPauseMenuSelected)
+
+                {
+                    optionsPauseButtonTMP.color = dimmedColor;
+                    mainMenuButtonPauseMenuTMP.color = highlightedColor;
+                    mainMenuPauseMenuSelected = true;
+                    optionsPauseMenuSelected = false;
+                }
+
+                else if (mainMenuPauseMenuSelected)
+
+                {
+                    mainMenuButtonPauseMenuTMP.color = dimmedColor;
+                    resumeGameButtonTMP.color = highlightedColor;
+                    mainMenuPauseMenuSelected = false;
+                    resumeSelected = true;
+                }
+            }
+
+            if (back)
+
+            {
+                resumeGameButtonTMP.color = dimmedColor;
+                restartButtonPauseMenuTMP.color = dimmedColor;
+                optionsPauseButtonTMP.color = dimmedColor;
+                mainMenuButtonPauseMenuTMP.color = dimmedColor;
+
+                resumeSelected = false;
+                restartPauseMenuSelected = false;
+                optionsPauseMenuSelected = false;
+                mainMenuPauseMenuSelected = false;
+
+                pauseMenu.SetActive (false);
+                GlobalsManager.gameState = GameState.Game;
+                Time.timeScale = 1;
+            }
+
+            if (fire)
+
+            {
+                if (resumeSelected)
+
+                {
+
+                    resumeGameButtonTMP.color = dimmedColor;
+                    restartButtonPauseMenuTMP.color = dimmedColor;
+                    optionsPauseButtonTMP.color = dimmedColor;
+                    mainMenuButtonPauseMenuTMP.color = dimmedColor;
+
+                    resumeSelected = false;
+                    restartPauseMenuSelected = false;
+                    optionsPauseMenuSelected = false;
+                    mainMenuPauseMenuSelected = false;
+
+                    pauseMenu.SetActive (false);
+                    GlobalsManager.gameState = GameState.Game;
+                    Time.timeScale = 1;
+
+                }
+
+                else if (restartPauseMenuSelected)
+
+                {
+                    //despawn everything
+                    //disable pause menu
+                    //set state to game
+                    //scale time to 1
+                    //set player position
+                    //set player rotation
+                    //reset health
+                    //reset ammo
+                    //reset guns
+                    //reset active pickups
+                    //reset arrays
+                    //reset shield
+
+                }
+
+                else if (optionsPauseMenuSelected)
+
+                {
+                    //go to options
+                }
+
+                else if (mainMenuPauseMenuSelected)
+
+                {
+                    EventManager.DespawnEverythingEvent ();
+                    //despawn everything
+                    //disable pause menu
+                    //enable main menu
+                    //set state to main menu
+                    //scale time to 1
+                }
+            }
+
+        }
+
+        #endregion
+
+        #region Game
+
         else if (GlobalsManager.gameState == GameState.Game)
 
         {
             if (back)
-            
+
             {
+                pauseMenu.SetActive (true);
                 GlobalsManager.gameState = GameState.PauseMenu;
-                pauseMenu.SetActive(true);
                 Time.timeScale = 0;
+                resumeGameButtonTMP.color = highlightedColor;
+                resumeSelected = true;
             }
 
-            
         }
-    }
 
+        else if (GlobalsManager.gameState == GameState.DeathMenu)
+
+        {
+
+        }
+
+        else if (GlobalsManager.gameState == GameState.ShipSelection)
+
+        {
+            if (back)
+
+            {
+                startGameSelected = true;
+                selectedShipImage.enabled = false;
+                GlobalsManager.gameState = GameState.MainMenu;
+                shipSelectionMenu.SetActive (false);
+                mainMenu.SetActive (true);
+            }
+        }
+
+        #endregion
+
+    }
 }

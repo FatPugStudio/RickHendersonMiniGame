@@ -17,10 +17,10 @@ public class GlobalsManager : MonoBehaviour
     public static bool shieldActive;
 
     public static bool bombActivated;
-    public static bool firstWeaponPickup;
-    public static bool doubleDamage;
-    public static bool magnetActive;
-    public static bool radiationActive;
+    [SerializeField] public static bool firstWeaponPickup;
+    [SerializeField] public static bool doubleDamage;
+    [SerializeField] public static bool magnetActive;
+    [SerializeField] public static bool radiationActive;
 
     //Bosses
     
@@ -30,7 +30,7 @@ public class GlobalsManager : MonoBehaviour
     public static Transform sundyneBoss;
     public static Transform terranBoss;
 
-    public static bool bossPresent;
+    [SerializeField] public static bool bossPresent;
 
     public static bool pirateBossDestroyed;
     public static bool paragonsBossDestroyed;
@@ -38,10 +38,9 @@ public class GlobalsManager : MonoBehaviour
     public static bool sundyneBossDestroyed;
     public static bool terranBossDestroyed;
 
-    public static GameObject lastPickedWeapon;
-    public static ShipSelected shipSelected;
-    [SerializeField]
-    public static GameState gameState;
+    [SerializeField] public static GameObject lastPickedWeapon;
+    [SerializeField] public static ShipSelected shipSelected;
+    [SerializeField] public static GameState gameState;
     
 
     void OnEnable()
