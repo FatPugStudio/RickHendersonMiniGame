@@ -9,21 +9,16 @@ using UnityEngine.UI;
 public class MainMenuController : MonoBehaviour
 
 {
-    //events & delegates
-
-    public delegate void StartGame ();
-    public static event StartGame OnGameStart;
-
     // rewired
 
-    private int playerId = 0;
-    private Player player;
-    private bool down = false;
-    private bool up = false;
-    private bool left = false;
-    private bool right = false;
-    private bool fire = false;
-    private bool back = false;
+    private int playerId = 0; // player id
+    private Player player; // rewired player
+    private bool down = false; // button down
+    private bool up = false; // button up
+    private bool left = false; // button left
+    private bool right = false; // button right
+    private bool fire = false; // button fire
+    private bool back = false; // button back
 
     //Menu Game Objects
 
@@ -36,31 +31,31 @@ public class MainMenuController : MonoBehaviour
 
     [SerializeField] public SpriteRenderer selectedShipImage;
 
-    public Sprite rickShip;
-    public Sprite benShip;
-    public Sprite thoraxxShip;
+    public Sprite rickShip; // Rick's ship
+    public Sprite benShip; // Ben's ship
+    public Sprite thoraxxShip; // Thoraxx's ship
 
     //Main Menu
-    [SerializeField] private bool startGameSelected = false;
-    [SerializeField] private bool optionsSelected = false;
-    [SerializeField] private bool quitSelected = false;
-    [SerializeField] private bool leaderboardsSelected = false;
+    [SerializeField] private bool startGameSelected = false; // start game selected
+    [SerializeField] private bool optionsSelected = false; // options selected
+    [SerializeField] private bool quitSelected = false; // quit selected
+    [SerializeField] private bool leaderboardsSelected = false; // leaderboards selected
 
     //Main Menu Options
-    [SerializeField] private bool volumeSelected = false;
-    [SerializeField] private bool backgroundSelected = false;
+    [SerializeField] private bool volumeSelected = false; // volume selected
+    [SerializeField] private bool backgroundSelected = false; // background selected
 
     //Pause Menu Options
-    [SerializeField] private bool resumeSelected = false;
-    [SerializeField] private bool restartPauseMenuSelected = false;
-    [SerializeField] private bool optionsPauseMenuSelected = false;
-    [SerializeField] private bool mainMenuPauseMenuSelected = false;
+    [SerializeField] private bool resumeSelected = false; // resume selected
+    [SerializeField] private bool restartPauseMenuSelected = false; // restart selected
+    [SerializeField] private bool optionsPauseMenuSelected = false; // options selected
+    [SerializeField] private bool mainMenuPauseMenuSelected = false; // main menu selected
 
     //Death Menu Options
 
-    [SerializeField] private bool restartDeathMenuSelected;
-    [SerializeField] private bool leaderboardsDeathMenuSelected;
-    [SerializeField] private bool mainMenuDeathMenuSelected;
+    [SerializeField] private bool restartDeathMenuSelected; // restart selected
+    [SerializeField] private bool leaderboardsDeathMenuSelected; // leaderboards selected
+    [SerializeField] private bool mainMenuDeathMenuSelected; // main menu selected
 
     //Ship Selection
     [SerializeField] private bool rickSelected = false;
@@ -120,85 +115,95 @@ public class MainMenuController : MonoBehaviour
     private TextMeshProUGUI volumeButtonTMP;
     private TextMeshProUGUI backgroundButtonTMP;
 
-    private void Awake ()
+    public static int bombs;
+
+    private void Awake()
 
     {
-        pauseMenu.SetActive (false);
-        deathMenu.gameObject.SetActive (false);
-        optionsMenu.gameObject.SetActive (false);
-        shipSelectionMenu.gameObject.SetActive (false);
-        leaderboardsMenu.gameObject.SetActive (false);
-        shipSelectionMenu.gameObject.SetActive (false);
+        pauseMenu.SetActive(false); // set pause menu to false
+        deathMenu.gameObject.SetActive(false); // set death menu to false
+        optionsMenu.gameObject.SetActive(false); // set options menu to false
+        shipSelectionMenu.gameObject.SetActive(false); // set ship selection menu to false
+        leaderboardsMenu.gameObject.SetActive(false); // set leaderboards menu to false
+        shipSelectionMenu.gameObject.SetActive(false); // set ship selection menu to false
+        EventManager.OnGamePauseEvent += GamePause; // add event listener
+
     }
 
-    private void Start ()
+    private void Start()
 
     {
         startGameSelected = true;
 
         //Get PlayerId
 
-        player = ReInput.players.GetPlayer (playerId);
+        player = ReInput.players.GetPlayer(playerId); // Get the Rewired Player object for this player.
 
         //Get TMP components
 
-        startGameButtonTMP = startGameButton.GetComponent<TMPro.TextMeshProUGUI> ();
-        leaderboardsButtonMainMenuTMP = leaderboardsButtonMainMenu.GetComponent<TMPro.TextMeshProUGUI> ();
-        optionsButtonTMP = optionsButton.GetComponent<TMPro.TextMeshProUGUI> ();
-        quitButtonTMP = quitButton.GetComponent<TMPro.TextMeshProUGUI> ();
-        pilotNameTMP = pilotName.GetComponent<TMPro.TextMeshProUGUI> ();
-        movementSpeedTMP = movementSpeed.GetComponent<TMPro.TextMeshProUGUI> ();
-        rotationSpeedTMP = rotationSpeed.GetComponent<TMPro.TextMeshProUGUI> ();
-        healthTMP = health.GetComponent<TMPro.TextMeshProUGUI> ();
-        ammoTMP = ammo.GetComponent<TMPro.TextMeshProUGUI> ();
-        shieldDurationTMP = shieldDuration.GetComponent<TMPro.TextMeshProUGUI> ();
-        leaderboardsButtonDeathMenuTMP = leaderboardsButtonDeathMenu.GetComponent<TMPro.TextMeshProUGUI> ();
-        restartButtonDeathMenuTMP = restartButtonDeathMenu.GetComponent<TMPro.TextMeshProUGUI> ();
-        mainMenuButtonDeathMenuTMP = mainMenuButtonDeathMenu.GetComponent<TMPro.TextMeshProUGUI> ();
-        resumeGameButtonTMP = resumeGameButton.GetComponent<TMPro.TextMeshProUGUI> ();
-        restartButtonPauseMenuTMP = restartButtonPauseMenu.GetComponent<TMPro.TextMeshProUGUI> ();
-        optionsPauseButtonTMP = optionsPauseButton.GetComponent<TMPro.TextMeshProUGUI> ();
-        mainMenuButtonPauseMenuTMP = mainMenuButtonPauseMenu.GetComponent<TMPro.TextMeshProUGUI> ();
-        volumeButtonTMP = volumeButton.GetComponent<TMPro.TextMeshProUGUI> ();
-        backgroundButtonTMP = backgroundButton.GetComponent<TMPro.TextMeshProUGUI> ();
+        startGameButtonTMP = startGameButton.GetComponent<TMPro.TextMeshProUGUI>();
+        leaderboardsButtonMainMenuTMP = leaderboardsButtonMainMenu.GetComponent<TMPro.TextMeshProUGUI>();
+        optionsButtonTMP = optionsButton.GetComponent<TMPro.TextMeshProUGUI>();
+        quitButtonTMP = quitButton.GetComponent<TMPro.TextMeshProUGUI>();
+        pilotNameTMP = pilotName.GetComponent<TMPro.TextMeshProUGUI>();
+        movementSpeedTMP = movementSpeed.GetComponent<TMPro.TextMeshProUGUI>();
+        rotationSpeedTMP = rotationSpeed.GetComponent<TMPro.TextMeshProUGUI>();
+        healthTMP = health.GetComponent<TMPro.TextMeshProUGUI>();
+        ammoTMP = ammo.GetComponent<TMPro.TextMeshProUGUI>();
+        shieldDurationTMP = shieldDuration.GetComponent<TMPro.TextMeshProUGUI>();
+        leaderboardsButtonDeathMenuTMP = leaderboardsButtonDeathMenu.GetComponent<TMPro.TextMeshProUGUI>();
+        restartButtonDeathMenuTMP = restartButtonDeathMenu.GetComponent<TMPro.TextMeshProUGUI>();
+        mainMenuButtonDeathMenuTMP = mainMenuButtonDeathMenu.GetComponent<TMPro.TextMeshProUGUI>();
+        resumeGameButtonTMP = resumeGameButton.GetComponent<TMPro.TextMeshProUGUI>();
+        restartButtonPauseMenuTMP = restartButtonPauseMenu.GetComponent<TMPro.TextMeshProUGUI>();
+        optionsPauseButtonTMP = optionsPauseButton.GetComponent<TMPro.TextMeshProUGUI>();
+        mainMenuButtonPauseMenuTMP = mainMenuButtonPauseMenu.GetComponent<TMPro.TextMeshProUGUI>();
+        volumeButtonTMP = volumeButton.GetComponent<TMPro.TextMeshProUGUI>();
+        backgroundButtonTMP = backgroundButton.GetComponent<TMPro.TextMeshProUGUI>();
 
-        MainMenu ();
+        MainMenu();
     }
 
-    private void OnEnable ()
+    private void OnEnable()
 
     {
-        selectedShipImage.enabled = false;
+        selectedShipImage.enabled = false; // set selected ship image to false
     }
 
-    private void MainMenu ()
-
-    {
-
-    }
-
-    private void Update ()
+    private void MainMenu()
 
     {
 
-        GetInput ();
-        ProcessInput ();
     }
 
-    void GetInput ()
+    void GamePause()
 
     {
 
-        down = player.GetButtonDown ("Brake");
-        up = player.GetButtonDown ("Boost");
-        left = player.GetButtonDown ("Left");
-        right = player.GetButtonDown ("Right");
-        fire = player.GetButtonDown ("Fire");
-        back = player.GetButtonDown ("Escape");
+    }
+
+    private void Update()
+
+    {
+
+        GetInput();
+        ProcessInput(); // greška
+    }
+
+    void GetInput()
+
+    {
+
+        down = player.GetButtonDown("Brake"); // get brake button
+        up = player.GetButtonDown("Boost"); // get boost button
+        left = player.GetButtonDown("Left"); // get left button
+        right = player.GetButtonDown("Right"); // get right button
+        fire = player.GetButtonDown("Fire"); // get fire button
+        back = player.GetButtonDown("Escape"); // get escape button
 
     }
 
-    void ProcessInput ()
+    void ProcessInput()
 
     {
 
@@ -371,16 +376,17 @@ public class MainMenuController : MonoBehaviour
 
                     //Set stats
                     selectedShipImage.sprite = rickShip;
-                    pilotNameTMP.SetText ("RICK HENDERSON", false);
-                    movementSpeedTMP.SetText ("RICK MOVEMENT SPEED", false);
-                    rotationSpeedTMP.SetText ("RICK ROTATION SPEED", false);
-                    healthTMP.SetText ("RICK HEALTH", false);
-                    ammoTMP.SetText ("RICK AMMO", false);
-                    shieldDurationTMP.SetText ("RICK SHIELD DURATION", false);
+                    pilotNameTMP.SetText("RICK HENDERSON", false);
+                    movementSpeedTMP.SetText("RICK MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText("RICK ROTATION SPEED", false);
+                    healthTMP.SetText("RICK HEALTH", false);
+                    ammoTMP.SetText("RICK AMMO", false);
+                    shieldDurationTMP.SetText("RICK SHIELD DURATION", false);
+                    GlobalsManager.bombs = 2;
 
                     //Activate Menu Elements
-                    mainMenu.SetActive (false);
-                    shipSelectionMenu.SetActive (true);
+                    mainMenu.SetActive(false);
+                    shipSelectionMenu.SetActive(true);
 
                 }
 
@@ -390,8 +396,8 @@ public class MainMenuController : MonoBehaviour
                     GlobalsManager.gameState = GameState.Leaderboards;
 
                     //Activate Menu Elements
-                    leaderboardsMenu.SetActive (true);
-                    mainMenu.SetActive (false);
+                    leaderboardsMenu.SetActive(true);
+                    mainMenu.SetActive(false);
                 }
 
                 else if (optionsSelected)
@@ -400,8 +406,8 @@ public class MainMenuController : MonoBehaviour
                     GlobalsManager.gameState = GameState.OptionsMenu;
 
                     //Activate Menu Elements
-                    optionsMenu.SetActive (true);
-                    mainMenu.SetActive (false);
+                    optionsMenu.SetActive(true);
+                    mainMenu.SetActive(false);
 
                     volumeButtonTMP.color = highlightedColor;
                     volumeSelected = true;
@@ -411,7 +417,7 @@ public class MainMenuController : MonoBehaviour
                 else if (quitSelected)
 
                 {
-                    Application.Quit ();
+                    Application.Quit();
 
                 }
 
@@ -427,8 +433,8 @@ public class MainMenuController : MonoBehaviour
             GlobalsManager.gameState = GameState.MainMenu;
 
             //Activate Menu Elements
-            optionsMenu.SetActive (false);
-            mainMenu.SetActive (true);
+            optionsMenu.SetActive(false);
+            mainMenu.SetActive(true);
 
             //uradi gore dole levo desno i back
         }
@@ -454,12 +460,13 @@ public class MainMenuController : MonoBehaviour
                     benSelected = false;
                     thoraxxSelected = true;
                     selectedShipImage.sprite = thoraxxShip;
-                    pilotNameTMP.SetText ("THORAXX", false);
-                    movementSpeedTMP.SetText ("THORAXX MOVEMENT SPEED", false);
-                    rotationSpeedTMP.SetText ("THORAXX ROTATION SPEED", false);
-                    healthTMP.SetText ("THORAXX HEALTH", false);
-                    ammoTMP.SetText ("THORAXX AMMO", false);
-                    shieldDurationTMP.SetText ("THORAXX SHIELD DURATION", false);
+                    pilotNameTMP.SetText("THORAXX", false);
+                    movementSpeedTMP.SetText("THORAXX MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText("THORAXX ROTATION SPEED", false);
+                    healthTMP.SetText("THORAXX HEALTH", false);
+                    ammoTMP.SetText("THORAXX AMMO", false);
+                    shieldDurationTMP.SetText("THORAXX SHIELD DURATION", false);
+                    GlobalsManager.bombs = 3;
 
                 }
 
@@ -473,13 +480,13 @@ public class MainMenuController : MonoBehaviour
                     benSelected = true;
                     thoraxxSelected = false;
                     selectedShipImage.sprite = benShip;
-                    pilotNameTMP.SetText ("BEN X9", false);
-                    movementSpeedTMP.SetText ("BEN MOVEMENT SPEED", false);
-                    rotationSpeedTMP.SetText ("BEN ROTATION SPEED", false);
-                    healthTMP.SetText ("BEN HEALTH", false);
-                    ammoTMP.SetText ("BEN AMMO", false);
-                    shieldDurationTMP.SetText ("BEN SHIELD DURATION", false);
-
+                    pilotNameTMP.SetText("BEN X9", false);
+                    movementSpeedTMP.SetText("BEN MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText("BEN ROTATION SPEED", false);
+                    healthTMP.SetText("BEN HEALTH", false);
+                    ammoTMP.SetText("BEN AMMO", false);
+                    shieldDurationTMP.SetText("BEN SHIELD DURATION", false);
+                    GlobalsManager.bombs = 1;
                 }
 
                 else if (thoraxxSelected)
@@ -492,13 +499,13 @@ public class MainMenuController : MonoBehaviour
                     benSelected = false;
                     thoraxxSelected = false;
                     selectedShipImage.sprite = rickShip;
-                    pilotNameTMP.SetText ("RICK HENDERSON", false);
-                    movementSpeedTMP.SetText ("RICK MOVEMENT SPEED", false);
-                    rotationSpeedTMP.SetText ("RICK ROTATION SPEED", false);
-                    healthTMP.SetText ("RICK HEALTH", false);
-                    ammoTMP.SetText ("RICK AMMO", false);
-                    shieldDurationTMP.SetText ("RICK SHIELD DURATION", false);
-
+                    pilotNameTMP.SetText("RICK HENDERSON", false);
+                    movementSpeedTMP.SetText("RICK MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText("RICK ROTATION SPEED", false);
+                    healthTMP.SetText("RICK HEALTH", false);
+                    ammoTMP.SetText("RICK AMMO", false);
+                    shieldDurationTMP.SetText("RICK SHIELD DURATION", false);
+                    GlobalsManager.bombs = 2;
                 }
             }
 
@@ -515,13 +522,13 @@ public class MainMenuController : MonoBehaviour
                     benSelected = false;
                     thoraxxSelected = false;
                     selectedShipImage.sprite = rickShip;
-                    pilotNameTMP.SetText ("RICK HENDERSON", false);
-                    movementSpeedTMP.SetText ("RICK MOVEMENT SPEED", false);
-                    rotationSpeedTMP.SetText ("RICK ROTATION SPEED", false);
-                    healthTMP.SetText ("RICK HEALTH", false);
-                    ammoTMP.SetText ("RICK AMMO", false);
-                    shieldDurationTMP.SetText ("RICK SHIELD DURATION", false);
-
+                    pilotNameTMP.SetText("RICK HENDERSON", false);
+                    movementSpeedTMP.SetText("RICK MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText("RICK ROTATION SPEED", false);
+                    healthTMP.SetText("RICK HEALTH", false);
+                    ammoTMP.SetText("RICK AMMO", false);
+                    shieldDurationTMP.SetText("RICK SHIELD DURATION", false);
+                    GlobalsManager.bombs = 2;
                 }
 
                 else if (rickSelected)
@@ -534,14 +541,14 @@ public class MainMenuController : MonoBehaviour
                     benSelected = false;
                     thoraxxSelected = true;
                     selectedShipImage.sprite = thoraxxShip;
-                    pilotNameTMP.SetText ("THORAXX", false);
-                    movementSpeedTMP.SetText ("THORAXX MOVEMENT SPEED", false);
-                    rotationSpeedTMP.SetText ("THORAXX ROTATION SPEED", false);
-                    healthTMP.SetText ("THORAXX HEALTH", false);
-                    ammoTMP.SetText ("THORAXX AMMO", false);
-                    shieldDurationTMP.SetText ("THORAXX SHIELD DURATION", false);
-                    Debug.LogError ("Ship Selected is " + GlobalsManager.shipSelected);
-
+                    pilotNameTMP.SetText("THORAXX", false);
+                    movementSpeedTMP.SetText("THORAXX MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText("THORAXX ROTATION SPEED", false);
+                    healthTMP.SetText("THORAXX HEALTH", false);
+                    ammoTMP.SetText("THORAXX AMMO", false);
+                    shieldDurationTMP.SetText("THORAXX SHIELD DURATION", false);
+                    Debug.LogError("Ship Selected is " + GlobalsManager.shipSelected);
+                    GlobalsManager.bombs = 3;
                 }
 
                 else if (thoraxxSelected)
@@ -553,13 +560,14 @@ public class MainMenuController : MonoBehaviour
                     benSelected = true;
                     thoraxxSelected = false;
                     selectedShipImage.sprite = benShip;
-                    pilotNameTMP.SetText ("BEN X9", false);
-                    movementSpeedTMP.SetText ("BEN MOVEMENT SPEED", false);
-                    rotationSpeedTMP.SetText ("BEN ROTATION SPEED", false);
-                    healthTMP.SetText ("BEN HEALTH", false);
-                    ammoTMP.SetText ("BEN AMMO", false);
-                    shieldDurationTMP.SetText ("BEN SHIELD DURATION", false);
-                    Debug.LogError ("Ship Selected is " + GlobalsManager.shipSelected);
+                    pilotNameTMP.SetText("BEN X9", false);
+                    movementSpeedTMP.SetText("BEN MOVEMENT SPEED", false);
+                    rotationSpeedTMP.SetText("BEN ROTATION SPEED", false);
+                    healthTMP.SetText("BEN HEALTH", false);
+                    ammoTMP.SetText("BEN AMMO", false);
+                    shieldDurationTMP.SetText("BEN SHIELD DURATION", false);
+                    Debug.LogError("Ship Selected is " + GlobalsManager.shipSelected);
+                    GlobalsManager.bombs = 1;
                 }
             }
 
@@ -567,21 +575,16 @@ public class MainMenuController : MonoBehaviour
 
             {
                 GlobalsManager.gameState = GameState.Game;
-                shipSelectionMenu.SetActive (false);
-
-                if (OnGameStart != null)
-
-                {
-                    OnGameStart ();
-                }
+                shipSelectionMenu.SetActive(false);
+                EventManager.OnGameStartEventBroadcast();
             }
 
             else if (back)
 
             {
                 GlobalsManager.gameState = GameState.MainMenu;
-                shipSelectionMenu.SetActive (false);
-                mainMenu.SetActive (true);
+                shipSelectionMenu.SetActive(false);
+                mainMenu.SetActive(true);
             }
 
         }
@@ -593,14 +596,14 @@ public class MainMenuController : MonoBehaviour
         else if (GlobalsManager.gameState == GameState.Leaderboards)
 
         {
-            leaderboardsMenu.SetActive (false);
-            mainMenu.SetActive (true);
+            leaderboardsMenu.SetActive(false);
+            mainMenu.SetActive(true);
 
             if (back)
 
             {
-                leaderboardsMenu.SetActive (false);
-                mainMenu.SetActive (true);
+                leaderboardsMenu.SetActive(false);
+                mainMenu.SetActive(true);
             }
         }
 
@@ -707,9 +710,10 @@ public class MainMenuController : MonoBehaviour
                 optionsPauseMenuSelected = false;
                 mainMenuPauseMenuSelected = false;
 
-                pauseMenu.SetActive (false);
+                pauseMenu.SetActive(false);
                 GlobalsManager.gameState = GameState.Game;
                 Time.timeScale = 1;
+                EventManager.OnGameResumeEventBroadcast();
             }
 
             if (fire)
@@ -718,6 +722,7 @@ public class MainMenuController : MonoBehaviour
                 if (resumeSelected)
 
                 {
+
 
                     resumeGameButtonTMP.color = dimmedColor;
                     restartButtonPauseMenuTMP.color = dimmedColor;
@@ -729,21 +734,31 @@ public class MainMenuController : MonoBehaviour
                     optionsPauseMenuSelected = false;
                     mainMenuPauseMenuSelected = false;
 
-                    pauseMenu.SetActive (false);
+                    pauseMenu.SetActive(false);
                     GlobalsManager.gameState = GameState.Game;
                     Time.timeScale = 1;
+                    EventManager.OnGameResumeEventBroadcast();
 
                 }
 
                 else if (restartPauseMenuSelected)
 
                 {
-                    //despawn everything
-                    //disable pause menu
-                    //set state to game
-                    //scale time to 1
-                    //set player position
-                    //set player rotation
+                    resumeGameButtonTMP.color = dimmedColor;
+                    restartButtonPauseMenuTMP.color = dimmedColor;
+                    optionsPauseButtonTMP.color = dimmedColor;
+                    mainMenuButtonPauseMenuTMP.color = dimmedColor;
+
+                    resumeSelected = false;
+                    restartPauseMenuSelected = false;
+                    optionsPauseMenuSelected = false;
+                    mainMenuPauseMenuSelected = false;
+
+                    pauseMenu.SetActive(false);
+                    GlobalsManager.gameState = GameState.Game;
+                    Time.timeScale = 1;
+                    EventManager.OnGameRestartEventBroadcast();
+
                     //reset health
                     //reset ammo
                     //reset guns
@@ -762,12 +777,11 @@ public class MainMenuController : MonoBehaviour
                 else if (mainMenuPauseMenuSelected)
 
                 {
-                    EventManager.DespawnEverythingEvent ();
-                    //despawn everything
-                    //disable pause menu
-                    //enable main menu
-                    //set state to main menu
-                    //scale time to 1
+                    EventManager.OnDespawnEverythingEventBroadcast();
+                    pauseMenu.SetActive(false);
+                    mainMenu.SetActive(true);
+                    GlobalsManager.gameState = GameState.MainMenu;
+                    Time.timeScale = 1;
                 }
             }
 
@@ -783,7 +797,8 @@ public class MainMenuController : MonoBehaviour
             if (back)
 
             {
-                pauseMenu.SetActive (true);
+                EventManager.OnGamePauseEventBroadcast();
+                pauseMenu.SetActive(true);
                 GlobalsManager.gameState = GameState.PauseMenu;
                 Time.timeScale = 0;
                 resumeGameButtonTMP.color = highlightedColor;
@@ -807,8 +822,8 @@ public class MainMenuController : MonoBehaviour
                 startGameSelected = true;
                 selectedShipImage.enabled = false;
                 GlobalsManager.gameState = GameState.MainMenu;
-                shipSelectionMenu.SetActive (false);
-                mainMenu.SetActive (true);
+                shipSelectionMenu.SetActive(false);
+                mainMenu.SetActive(true);
             }
         }
 

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using DarkTonic.CoreGameKit;
 using UnityEngine;
 
-public class ScoreListener : MonoBehaviour {
+public class ScoreListener : MonoBehaviour
+{
 
     //Current variables
 
@@ -42,11 +43,13 @@ public class ScoreListener : MonoBehaviour {
     public int level13Limit;
     public int level14Limit;
     public int level15Limit;
-    
+
     public static int limitAdd;
 
-Vector3 spawnPosition = new Vector3 (0.0f, 0.0f, 0.0f);
-    void Start () {
+    Vector3 spawnPosition = new Vector3(0.0f, 0.0f, 0.0f);
+
+    void Start()
+    {
 
         //reset level sent bools
         //reset default level limits
@@ -55,11 +58,12 @@ Vector3 spawnPosition = new Vector3 (0.0f, 0.0f, 0.0f);
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update()
+    {
 
     }
 
-    public void BossDestroyed ()
+    public void BossDestroyed()
 
     {
         currentLevel = GlobalsManager.level;
@@ -80,8 +84,8 @@ Vector3 spawnPosition = new Vector3 (0.0f, 0.0f, 0.0f);
 
             {
                 Debug.Log("Waiting for Pirate Boss to be Destroyed");
-            } 
-            
+            }
+
             else
 
             {
@@ -89,63 +93,78 @@ Vector3 spawnPosition = new Vector3 (0.0f, 0.0f, 0.0f);
 
                 {
                     GlobalsManager.level += 1;
-                } 
-                
+                }
+
                 else
 
-                GlobalsManager.pirateBossDestroyed = false;
-                GlobalsManager.bossPresent = true;
-                DarkTonic.CoreGameKit.PoolBoss.Spawn (GlobalsManager.pirateBoss, spawnPosition, GlobalsManager.pirateBoss.rotation, null);
+                {
+                    GlobalsManager.pirateBossDestroyed = false;
+                    GlobalsManager.bossPresent = true;
+                    DarkTonic.CoreGameKit.PoolBoss.Spawn(GlobalsManager.pirateBoss, spawnPosition, GlobalsManager.pirateBoss.rotation, null);
+                }
 
             }
         }
 
-        if (currentScore >= level4Limit && currentLevel == 3) {
+        if (currentScore >= level4Limit && currentLevel == 3)
+        {
 
         }
 
-        if (currentScore >= level5Limit && currentLevel == 4) {
+        if (currentScore >= level5Limit && currentLevel == 4)
+        {
 
         }
 
-        if (currentScore >= level6Limit && currentLevel == 5) {
+        if (currentScore >= level6Limit && currentLevel == 5)
+        {
 
         }
 
-        if (currentScore >= level7Limit && currentLevel == 6) {
+        if (currentScore >= level7Limit && currentLevel == 6)
+        {
 
         }
 
-        if (currentScore >= level8Limit && currentLevel == 7) {
+        if (currentScore >= level8Limit && currentLevel == 7)
+        {
 
         }
 
-        if (currentScore >= level9Limit && currentLevel == 8) {
+        if (currentScore >= level9Limit && currentLevel == 8)
+        {
 
         }
 
-        if (currentScore >= level10Limit && currentLevel == 9) {
+        if (currentScore >= level10Limit && currentLevel == 9)
+        {
 
         }
 
-        if (currentScore >= level11Limit && currentLevel == 10) {
+        if (currentScore >= level11Limit && currentLevel == 10)
+        {
 
         }
 
-        if (currentScore >= level12Limit && currentLevel == 11) {
+        if (currentScore >= level12Limit && currentLevel == 11)
+        {
 
         }
 
-        if (currentScore >= level13Limit && currentLevel == 12) {
+        if (currentScore >= level13Limit && currentLevel == 12)
+        {
 
         }
 
-        if (currentScore >= level14Limit && currentLevel == 13) {
+        if (currentScore >= level14Limit && currentLevel == 13)
+        {
 
         }
 
-        if (currentScore >= level15Limit && currentLevel == 14) {
+        if (currentScore >= level15Limit && currentLevel == 14)
+        {
 
-        } else return;
+        }
+        else return;
     }
 }

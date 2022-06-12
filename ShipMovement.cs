@@ -40,26 +40,29 @@ public class ShipMovement : MonoBehaviour
     [SerializeField] GameObject playerJet;
     ParticleSystem particleSystem;
 
-    //Boos Meter
+    //Boss Meter
 
     [SerializeField] GameObject boostDisplayGameObject;
     [SerializeField] RepeatedRendererUGUI repeatedRendererUGUI;
     [SerializeField] EnergyBar energyBar;
 
-    private void OnEnable ()
+    private void OnEnable()
 
     {
-        player = ReInput.players.GetPlayer (playerId);
-        rigidbody2d = GetComponent<Rigidbody2D> ();
-        particleSystem = GameObject.Find ("FireFlashParticleSystem").GetComponent<ParticleSystem> ();
-        particleSystem.Stop ();
-        playerJet.SetActive (false);
-        Health.OnGameOver += GameOver;
-        MainMenuController.OnGameStart += StartGame;
-        boostDisplayGameObject.SetActive (false);
+        player = ReInput.players.GetPlayer(playerId);
+        rigidbody2d = GetComponent<Rigidbody2D>();
+        particleSystem = GameObject.Find("FireFlashParticleSystem").GetComponent<ParticleSystem>();
+        particleSystem.Stop();
+        playerJet.SetActive(false);
+
+        EventManager.OnGameOverEvent += GameOver; // Subscribe to the event.
+        EventManager.OnGameStartEvent += StartGame; // Subscribe to the event.
+        EventManager.OnGameRestartEvent += GameRestart; // Subscribe to the event.
+
+        //boostDisplayGameObject.SetActive(false);
     }
 
-    private void StartGame ()
+    private void StartGame()
 
     {
         //Debug.LogError("OnGameStart received");
@@ -67,12 +70,12 @@ public class ShipMovement : MonoBehaviour
 
         //Set Engine Jet Particle system speed and play it
 
-        playerJet.SetActive (true);
+        playerJet.SetActive(true);
         particleSystem.playbackSpeed = 1.0f;
-        particleSystem.Play ();
+        particleSystem.Play();
 
         //Activate BoostCounter game object
-        boostDisplayGameObject.SetActive (true);
+        //boostDisplayGameObject.SetActive(true);
 
         if (GlobalsManager.shipSelected == ShipSelected.Rick)
 
@@ -105,13 +108,13 @@ public class ShipMovement : MonoBehaviour
         }
 
         boostMeterClamped = boostMeterMax;
-        energyBar.SetValueMin (0);
-        energyBar.SetValueMax (Convert.ToInt32 (boostMeterMax));
-        energyBar.SetValueCurrent (Convert.ToInt32 (boostMeterMax));
+        energyBar.SetValueMin(0);
+        energyBar.SetValueMax(Convert.ToInt32(boostMeterMax));
+        energyBar.SetValueCurrent(Convert.ToInt32(boostMeterMax));
 
     }
 
-    private void Update ()
+    private void Update()
 
     {
 
@@ -123,25 +126,25 @@ public class ShipMovement : MonoBehaviour
             //Clamp the boost meter
 
             //Debug.Log(boostMeterClamped);
-            boostMeterClamped = Mathf.Clamp (boostMeterClamped, 0, boostMeterMax);
+            boostMeterClamped = Mathf.Clamp(boostMeterClamped, 0, boostMeterMax);
 
             //Move Ship
 
             transform.position += transform.right * Time.deltaTime * Speed;
 
-            GetInput ();
-            ProcessInput ();
+            GetInput();
+            ProcessInput();
         }
     }
 
-    private void GetInput ()
+    private void GetInput()
 
     {
-        boost = player.GetButton ("Boost");
-        brake = player.GetButton ("Brake");
+        boost = player.GetButton("Boost");
+        brake = player.GetButton("Brake");
     }
 
-    private void ProcessInput ()
+    private void ProcessInput()
 
     {
         if (boost)
@@ -152,15 +155,14 @@ public class ShipMovement : MonoBehaviour
 
             {
                 particleSystem.playbackSpeed = 0.5f;
-                //Debug.Log(boostMeterClamped);
                 Speed = boostSpeed;
-                Boost ();
+                Boost();
             }
 
             else if (boostMeterClamped == 0)
 
             {
-                BoostAndBreakMeterEmpty ();
+                BoostAndBreakMeterEmpty();
             }
 
         }
@@ -175,14 +177,14 @@ public class ShipMovement : MonoBehaviour
                 particleSystem.playbackSpeed = 2.0f;
                 //Debug.Log(boostMeterClamped);
                 Speed = brakeSpeed;
-                Boost ();
+                Boost();
 
             }
 
             else if (boostMeterClamped == 0)
 
             {
-                BoostAndBreakMeterEmpty ();
+                BoostAndBreakMeterEmpty();
             }
 
         }
@@ -193,11 +195,11 @@ public class ShipMovement : MonoBehaviour
             //Debug.Log(boostMeterClamped);
             Speed = regularSpeed;
             boostMeterClamped += 0.1f;
-            energyBar.SetValueCurrent (Convert.ToInt32 (boostMeterClamped));
+            energyBar.SetValueCurrent(Convert.ToInt32(boostMeterClamped));
         }
     }
 
-    private void BoostAndBreakMeterEmpty ()
+    private void BoostAndBreakMeterEmpty()
 
     {
         particleSystem.playbackSpeed = 1.0f;
@@ -205,25 +207,71 @@ public class ShipMovement : MonoBehaviour
         //Debug.Log("Boost Empty");
     }
 
-    private void Boost ()
+    private void Boost()
 
     {
         boostMeterClamped -= 0.1f;
-        energyBar.SetValueCurrent (Convert.ToInt32 (boostMeterClamped));
+        energyBar.SetValueCurrent(Convert.ToInt32(boostMeterClamped));
         //Debug.Log(boostMeterClamped);
     }
 
-    private void GameOver ()
+    private void GameOver()
 
     {
         particleSystem.playbackSpeed = 1;
-        particleSystem.Stop ();
+        particleSystem.Stop();
     }
 
-    private void OnDisable ()
+    private void GameRestart()
 
     {
-        Health.OnGameOver -= GameOver;
+        particleSystem.playbackSpeed = 1;
+        transform.position = new Vector3(0, 0, 1);
+        transform.rotation = new Quaternion(0, 0, 0, 0);
+        //particleSystem.Stop();
+
+        if (GlobalsManager.shipSelected == ShipSelected.Rick)
+
+        {
+            regularSpeed = 0.75f;
+            boostSpeed = 1.0f;
+            brakeSpeed = 0.5f;
+            boostMeterMax = 10.0f;
+            repeatedRendererUGUI.repeatCount = rickRepeatCount;
+        }
+
+        else if (GlobalsManager.shipSelected == ShipSelected.Ben)
+
+        {
+            regularSpeed = 0.9f;
+            boostSpeed = 1.15f;
+            brakeSpeed = 0.65f;
+            boostMeterMax = 12.0f;
+            repeatedRendererUGUI.repeatCount = benRepeatCount;
+        }
+
+        else if (GlobalsManager.shipSelected == ShipSelected.Thoraxx)
+
+        {
+            regularSpeed = 0.6f;
+            boostSpeed = 0.75f;
+            brakeSpeed = 0.35f;
+            boostMeterMax = 8.0f;
+            repeatedRendererUGUI.repeatCount = thoraxxRepeatCount;
+        }
+
+        boostMeterClamped = boostMeterMax;
+        energyBar.SetValueMin(0);
+        energyBar.SetValueMax(Convert.ToInt32(boostMeterMax));
+        energyBar.SetValueCurrent(Convert.ToInt32(boostMeterMax));
+    }
+
+
+    private void OnDisable()
+
+    {
+        EventManager.OnGameOverEvent -= GameOver; // Unsubscribe to the event.
+        EventManager.OnGameStartEvent -= StartGame; // Unsubscribe to the event.
     }
 
 }

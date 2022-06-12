@@ -1,90 +1,77 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class Health : MonoBehaviour
 {
     public ShipSelected shipSelected;
+
     public int rickHealth;
     public int benHealth;
     public int thoraxxHealth;
-    GameObject cachedBarObject;
-    EnergyBar cachedEnergyBar;
+
     public string enemyHitTag;
+
     public bool shieldActive;
+
     private GameObject playerShield;
     private PlayerShipShield _playerShipShield;
-    
-    public delegate void GameOver();
-    public static event GameOver OnGameOver;
-    
 
-    
     void OnEnable()
 
     {
-        MainMenuController.OnGameStart += StartGame;
-        //cachedEnergyBar = cachedBarObject.GetComponent<EnergyBar>();
+        EventManager.OnGameStartEvent += StartGame;
+        EventManager.OnGameOverEvent += GameOver;
+        EventManager.OnGameRestartEvent += GameRestart;
         playerShield = GameObject.Find("PlayerShipShield");
         _playerShipShield = playerShield.gameObject.GetComponent<PlayerShipShield>();
     }
 
-    void OnCollisionEnter2D(Collision2D other) 
-        
+    void OnCollisionEnter2D(Collision2D other)
+
+    {
+        enemyHitTag = other.gameObject.tag;
+
+        switch (enemyHitTag)
+
         {
-            enemyHitTag = other.gameObject.tag;
-
-            switch (enemyHitTag)
-
-            {
-                case "Enemy":
+            case "Enemy":
                 TakeDamage();
                 break;
 
-                case "EnemyBullet":
+            case "EnemyBullet":
                 TakeDamage();
                 break;
 
-                case "EnemyLaser":
+            case "EnemyLaser":
                 TakeDamage();
                 break;
-            }
-            
-        }    
+        }
+
+    }
 
     void StartGame()
-    
+
     {
-    
-        switch(shipSelected)
-        
+
+        switch (shipSelected)
+
         {
             //enum Switch Ship Selected and set health
 
             case ShipSelected.Rick:
-            GlobalsManager.health = rickHealth;
-            break;
+                GlobalsManager.health = rickHealth;
+                break;
 
             case ShipSelected.Ben:
-            GlobalsManager.health = benHealth;
-            break;
+                GlobalsManager.health = benHealth;
+                break;
 
             case ShipSelected.Thoraxx:
-            GlobalsManager.health = thoraxxHealth;
-            break;
+                GlobalsManager.health = thoraxxHealth;
+                break;
         }
-
-        //set energybar min max and current value
-        
-        //ne može da nađe ovo
-        //cachedEnergyBar.SetValueMax(GlobalsManager.health);
-        //cachedEnergyBar.SetValueMin(0);
-        //cachedEnergyBar.valueCurrent = Mathf.Clamp(GlobalsManager.health, cachedEnergyBar.valueMin, cachedEnergyBar.valueMax);
-        
-        
-        
-        //spawn explosions
 
     }
 
@@ -93,35 +80,62 @@ public class Health : MonoBehaviour
     {
         shieldActive = GlobalsManager.shieldActive;
         if (shieldActive)
-        
+
         {
             return;
         }
 
         else
-        
+
         {
             GlobalsManager.health -= 1;
-            //cachedEnergyBar.SetValueCurrent(GlobalsManager.health);
 
             if (GlobalsManager.health == 0)
 
-                {
-                    OnGameOver();
-                }
-            
-            else 
-            
-            _playerShipShield.ActivateShield();
+            {
+                EventManager.OnGameOverEventBroadcast();
+            }
+
+            else
+
+                _playerShipShield.ActivateShield();
         }
 
     }
 
-    void OnDisable() 
-    
+    void OnDisable()
+
     {
-        MainMenuController.OnGameStart -= StartGame;
+        EventManager.OnGameStartEvent -= StartGame;
     }
-        
-    
+
+    void GameOver()
+
+    {
+        //spawn explosion
+        //spawn game over screen
+    }
+
+    void GameRestart()
+
+    {
+        switch (shipSelected)
+
+        {
+            //enum Switch Ship Selected and set health
+
+            case ShipSelected.Rick:
+                GlobalsManager.health = rickHealth;
+                break;
+
+            case ShipSelected.Ben:
+                GlobalsManager.health = benHealth;
+                break;
+
+            case ShipSelected.Thoraxx:
+                GlobalsManager.health = thoraxxHealth;
+                break;
+        }
+    }
+
 }

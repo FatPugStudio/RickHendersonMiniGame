@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Rewired;
 using UnityEngine;
 
-public class PulseGunFiringSystem : MonoBehaviour {
+public class PulseGunFiringSystem : MonoBehaviour
+{
 
     public int playerId = 0;
     private Player player;
@@ -15,89 +16,89 @@ public class PulseGunFiringSystem : MonoBehaviour {
     public bool enumMatch;
     public GameState gameState;
 
-    void Start ()
+    void Start()
 
     {
-        Health.OnGameOver += GameOver;
-        
+        EventManager.OnGameOverEvent += GameOver; // Subscribe to the event.
+
         ammo = GlobalsManager.ammo;
-        gunpoint = GameObject.Find ("Gunpoint");
-        ubhShotCtrl = GetComponent<UbhShotCtrl> ();
-        player = ReInput.players.GetPlayer (playerId);
-        animator = gunpoint.GetComponent<Animator> ();
+        gunpoint = GameObject.Find("Gunpoint");
+        ubhShotCtrl = GetComponent<UbhShotCtrl>();
+        player = ReInput.players.GetPlayer(playerId);
+        animator = gunpoint.GetComponent<Animator>();
 
     }
 
     // Update is called once per frame
 
-    void Update ()
+    void Update()
 
     {
-        GetInput ();
-        ProcessInput ();
+        GetInput();
+        ProcessInput();
     }
 
-    public void StartGame ()
-
-    {
-
-    }
-
-    public void PauseGame ()
+    public void StartGame()
 
     {
 
     }
 
-    public void UnpauseGame ()
+    public void PauseGame()
 
     {
 
     }
 
-    public void GetInput ()
+    public void UnpauseGame()
 
     {
-        fire = player.GetButton ("Fire");
+
     }
 
-    public void ProcessInput ()
+    public void GetInput()
 
-    { 
+    {
+        fire = player.GetButton("Fire");
+    }
+
+    public void ProcessInput()
+
+    {
         int ammo = GlobalsManager.ammo;
 
         if (fire && ammo > 0 && gameState == GameState.Game)
 
         {
-            ubhShotCtrl.StartShotRoutine ();
+            ubhShotCtrl.StartShotRoutine();
 
-        } 
-        
+        }
+
         else
 
         {
-            ubhShotCtrl.StopShotRoutineAndPlayingShot ();
+            ubhShotCtrl.StopShotRoutineAndPlayingShot();
             return;
         }
     }
 
-    public void ShotFired ()
+    public void ShotFired()
 
     {
         GlobalsManager.ammo = ammo - 1;
-        animator.Play ("Pulse Gun Muzzle");
+        animator.Play("Pulse Gun Muzzle");
     }
 
-    public void GameOver ()
+    public void GameOver()
 
     {
         ubhShotCtrl.StopShotRoutineAndPlayingShot();
     }
 
-    private void OnDisable() 
-    
+    private void OnDisable()
+
     {
-        Health.OnGameOver -= GameOver;
+        EventManager.OnGameOverEvent -= GameOver;
     }
 
 }

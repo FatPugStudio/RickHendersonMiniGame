@@ -3,18 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using DarkTonic.MasterAudio;
 
-public class PlayerShipShield : MonoBehaviour {
+public class PlayerShipShield : MonoBehaviour
+{
 
     PolygonCollider2D polygonCollider2D;
     SpriteRenderer spriteRenderer;
     public float defaultShieldTimerValue;
     public float shieldTimerValue;
-    public float currentCountdownValue;    
-    
-    void Start () 
-    
+    public float currentCountdownValue;
+
+    void OnEnable()
+
     {
-        
+        //Subscribe to events
+
+        EventManager.OnGameOverEvent += GameOver;
+        EventManager.OnGameStartEvent += StartGame;
+        EventManager.OnGameRestartEvent += StartGame;
+
         shieldTimerValue = defaultShieldTimerValue;
         spriteRenderer = GetComponent<SpriteRenderer>();
         polygonCollider2D = GetComponent<PolygonCollider2D>();
@@ -22,22 +28,16 @@ public class PlayerShipShield : MonoBehaviour {
         polygonCollider2D.enabled = false;
     }
 
-    void StartGame () 
-    
+    void StartGame()
+
     {
         GlobalsManager.shieldActive = false;
         spriteRenderer.enabled = false;
         polygonCollider2D.enabled = false;
     }
 
-    void RestartGame () 
-    
-    {
+    public void ActivateShield()
 
-    }
-
-    public void ActivateShield () 
-    
     {
         DarkTonic.MasterAudio.MasterAudio.PlaySound("ShieldActivate");
         GlobalsManager.shieldActive = true;
@@ -46,16 +46,16 @@ public class PlayerShipShield : MonoBehaviour {
         StartCoroutine(StartCountdown(shieldTimerValue));
     }
 
-    void GameOver () 
-    
+    void GameOver()
+
     {
         GlobalsManager.shieldActive = false;
         spriteRenderer.enabled = false;
         polygonCollider2D.enabled = false;
     }
 
-    void DeactivateShield () 
-    
+    void DeactivateShield()
+
     {
         DarkTonic.MasterAudio.MasterAudio.PlaySound("ShieldDeactivate");
         GlobalsManager.shieldActive = false;
@@ -67,7 +67,7 @@ public class PlayerShipShield : MonoBehaviour {
     {
         currentCountdownValue = shieldTimerValue;
         while (currentCountdownValue > 0)
-        
+
         {
             yield return new WaitForSeconds(1.0f);
             currentCountdownValue--;

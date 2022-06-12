@@ -1,19 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class GlobalsManager : MonoBehaviour
 {
-    
+
     public static int ammo;
-    public static int bombs;
-    public static int health;
-    public static int level;
-    public static int score;
-    
+    [SerializeField] public static int bombs;
+    [SerializeField] public static int health;
+    [SerializeField] public static int level;
+    [SerializeField] public static int score;
+
     //Shield
-    public static float shieldTime; 
+    public static float shieldTime;
     public static bool shieldActive;
 
     public static bool bombActivated;
@@ -23,7 +23,7 @@ public class GlobalsManager : MonoBehaviour
     [SerializeField] public static bool radiationActive;
 
     //Bosses
-    
+
     public static Transform pirateBoss;
     public static Transform paragonsBoss;
     public static Transform rokhRaidersBoss;
@@ -41,35 +41,41 @@ public class GlobalsManager : MonoBehaviour
     [SerializeField] public static GameObject lastPickedWeapon;
     [SerializeField] public static ShipSelected shipSelected;
     [SerializeField] public static GameState gameState;
-    
 
     void OnEnable()
 
     {
-        Health.OnGameOver += GameOver;
-        MainMenuController.OnGameStart += StartGame;
+        EventManager.OnGameOverEvent += GameOver;
+        EventManager.OnGameStartEvent += StartGame;
+        EventManager.OnGamePauseEvent += GamePause;
     }
 
-    private void Start() 
-    
-    {   
+    private void Start()
+
+    {
         gameState = GameState.MainMenu;
     }
 
-    public void GameOver () 
-    
+    public void GameOver()
+
     {
         gameState = GameState.DeathMenu;
     }
 
-    public void UnpauseGame ()
+    public void UnpauseGame()
 
     {
         gameState = GameState.Game;
     }
 
-    public static void StartGame () 
-    
+    public void GamePause()
+
+    {
+        gameState = GameState.PauseMenu;
+    }
+
+    public static void StartGame()
+
     {
         ammo = 200;
         firstWeaponPickup = true;
@@ -78,19 +84,17 @@ public class GlobalsManager : MonoBehaviour
         bossPresent = false;
         bombActivated = false;
         radiationActive = false;
-        health = 10;
         score = 0;
+
         //lastPickedWeapon = pulsegunpickup;
-        
+
     }
 
     void OnDisable()
 
     {
-        Health.OnGameOver -= GameOver;
-        MainMenuController.OnGameStart -= StartGame;
+        EventManager.OnGameOverEvent -= GameOver;
+        EventManager.OnGameStartEvent -= StartGame;
     }
 
-
-    
 }

@@ -1,55 +1,71 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using DarkTonic.CoreGameKit;
+using UnityEngine;
 
-public class AmmoPickup : MonoBehaviour {
-    
-    [SerializeField]
-    private float speedWithMagnet;
-    
-    [SerializeField]
-    private float speedWithoutMagnet;
+public class AmmoPickup : MonoBehaviour
+{
 
     [SerializeField]
-    private int ammoToAdd; //2
+    private float speedWithMagnet; //speed of the ammo pickup when magnet is active
 
-    public GameObject targetObject;
-    public GameObject gemPickupAnimation;
+    [SerializeField]
+    private float speedWithoutMagnet; //speed of the ammo pickup when magnet is not active
 
-    private void Start() 
-    
+    [SerializeField]
+    private int ammoToAdd; //ammo to add to the player
+
+    public GameObject targetObject; //the object that the ammo pickup is attracted to
+    public Transform gemPickupAnimation; //the animation that plays when the ammo pickup is picked up
+
+
+    private void Start()
+
     {
-        targetObject = GameObject.Find("Player");
+        targetObject = GameObject.Find("Player"); //find the player object
+        EventManager.OnGameOverEvent += GameOver; //subscribe to event
+        EventManager.OnGameRestartEvent += RestartGame; //subscribe to event
     }
 
-    void Update () 
-    
+    void Update()
+
     {
         if (GlobalsManager.magnetActive)
 
         {
-            this.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, targetObject.gameObject.transform.position, speedWithMagnet * Time.deltaTime);
+            this.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, targetObject.gameObject.transform.position, speedWithMagnet * Time.deltaTime); //move the ammo pickup towards the player
         }
 
         else
 
         {
-            this.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, targetObject.gameObject.transform.position, speedWithoutMagnet * Time.deltaTime);
+            this.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, targetObject.gameObject.transform.position, speedWithoutMagnet * Time.deltaTime); //move the ammo pickup towards the player slower when the magnet is not active
         }
 
-        
     }
 
-    private void OnCollisionEnter2D(Collision2D other) 
-    
+    private void OnCollisionEnter2D(Collision2D other)
+
     {
-        if (other.gameObject.transform.CompareTag("PlayerPickup")) // ne radi iz nekog razloga
-        
+        if (other.gameObject.transform.CompareTag("PlayerPickup")) ;
+
         {
-            GlobalsManager.ammo += ammoToAdd;
-            DarkTonic.CoreGameKit.PoolBoss.Spawn(gemPickupAnimation.transform, this.transform.position, gemPickupAnimation.transform.rotation, null);
-            DarkTonic.CoreGameKit.PoolBoss.Despawn(this.transform);
+            //Debug.Log("Collided with" + other.gameObject.name);
+            //send event to update ammo counter
+            DarkTonic.CoreGameKit.PoolBoss.Spawn(gemPickupAnimation, this.transform.position, gemPickupAnimation.transform.rotation, null); //spawn the pickup animation
+            //OnAmmoPickupEvent (); //call the event
+            EventManager.OnAmmoPickupEventBroadcast(); //call the event
+            DarkTonic.CoreGameKit.PoolBoss.Despawn(this.transform); //despawn the ammo pickup
         }
+    }
+
+    void GameOver()
+    {
+
+    }
+    void RestartGame()
+
+    {
+        DarkTonic.CoreGameKit.PoolBoss.Despawn(this.transform); //despawn the ammo pickup
     }
 }

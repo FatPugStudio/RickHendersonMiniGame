@@ -15,7 +15,7 @@ public class BackgroundController : MonoBehaviour
     int index;
 
     void Start()
-    
+
     {
         nebula = GameObject.Find("Nebula");
         backgroundGradient = GameObject.Find("BackgroundGradient");
@@ -25,10 +25,9 @@ public class BackgroundController : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void StartGame()

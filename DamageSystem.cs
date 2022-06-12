@@ -22,15 +22,16 @@ public class DamageSystem : MonoBehaviour
     public Vector3 eulerAnglesRotation;
     public float randomZ;
 
-    void Start ()
+
+    void OnEnable()
 
     {
         isDestroyed = false;
-        jet = transform.GetChild (0);
-        int score = (int) hitPoints;
+        jet = transform.GetChild(0);
+        int score = (int)hitPoints;
     }
 
-    void ApplyDamage (float bulletDamage)
+    void ApplyDamage(float bulletDamage)
 
     {
         hitPoints = hitPoints - bulletDamage;
@@ -38,12 +39,12 @@ public class DamageSystem : MonoBehaviour
         if (hitPoints <= 0 && !isDestroyed)
 
         {
-            AddScore ();
+            AddScore();
         }
 
     }
 
-    void DestroyedByBomb ()
+    void DestroyedByBomb()
 
     {
         if (GlobalsManager.bossPresent)
@@ -51,16 +52,18 @@ public class DamageSystem : MonoBehaviour
         {
             GlobalsManager.score += score;
             ScoreListener.limitAdd += score;
-            DestroySelf ();
+            DestroySelf();
         }
 
         else
 
+        {
             GlobalsManager.score += score;
-        DestroySelf ();
+            DestroySelf();
+        }
     }
 
-    void AddScore ()
+    void AddScore()
 
     {
         if (GlobalsManager.bossPresent)
@@ -68,16 +71,18 @@ public class DamageSystem : MonoBehaviour
         {
             GlobalsManager.score += score;
             ScoreListener.limitAdd += score;
-            DestroySelf ();
+            DestroySelf();
         }
 
         else
 
+        {
             GlobalsManager.score += score;
-        DestroySelf ();
+            DestroySelf();
+        }
     }
 
-    void DestroySelf ()
+    void DestroySelf()
 
     {
         if (isDestroyed)
@@ -95,25 +100,25 @@ public class DamageSystem : MonoBehaviour
         isDestroyed = true;
 
         //spawn explosions
-        DarkTonic.CoreGameKit.PoolBoss.Spawn (circleExplosion, enemyPosition, rotationQuaternion, null);
-        DarkTonic.CoreGameKit.PoolBoss.Spawn (genericExplosion, enemyPosition, rotationQuaternion, null);
-        DarkTonic.CoreGameKit.PoolBoss.Spawn (emberExplosion, enemyPosition, rotationQuaternion, null);
+        DarkTonic.CoreGameKit.PoolBoss.Spawn(circleExplosion, enemyPosition, rotationQuaternion, null);
+        DarkTonic.CoreGameKit.PoolBoss.Spawn(genericExplosion, enemyPosition, rotationQuaternion, null);
+        DarkTonic.CoreGameKit.PoolBoss.Spawn(emberExplosion, enemyPosition, rotationQuaternion, null);
 
         //set the animator of generic explosion, different animator for different enemies
 
-        Animator animator = genericExplosion.transform.GetComponent<Animator> ();
+        Animator animator = genericExplosion.transform.GetComponent<Animator>();
         animator.runtimeAnimatorController = animatorController;
         animator.enabled = true;
 
-        DarkTonic.CoreGameKit.PoolBoss.Despawn (jet, false);
-        DarkTonic.CoreGameKit.PoolBoss.Despawn (this.gameObject.transform, false);
+        DarkTonic.CoreGameKit.PoolBoss.Despawn(jet, false);
+        DarkTonic.CoreGameKit.PoolBoss.Despawn(this.gameObject.transform, false);
 
     }
 
-    void Restart ()
+    void Restart()
 
     {
-        DestroySelf ();
+        DestroySelf();
     }
 
 }
