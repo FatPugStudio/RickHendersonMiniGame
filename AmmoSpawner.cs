@@ -43,6 +43,7 @@ public class AmmoSpawner : MonoBehaviour
         EventManager.OnGameStartEvent += StartGame; //subscribe to event
         EventManager.OnGameOverEvent += GameOver; //subscribe to event
         EventManager.OnGameRestartEvent += RestartGame; //subscribe to event
+        EventManager.OnBackToMainMenuEvent += BackToMainMenu; //subscribe to event    
     }
 
     void StartGame()
@@ -77,57 +78,67 @@ public class AmmoSpawner : MonoBehaviour
 
     {
 
-        var myBool = (Random.value < 0.5); //random bool
-
-        if (myBool) //if true, set on horizontal line
+        if (GlobalsManager.gameState == GameState.Game)
 
         {
-            //Generate vertical position
+            var myBool = (Random.value < 0.5); //random bool
 
-            randomVerticalPosition = new float[2];
-            randomVerticalPosition[0] = -2.12f;
-            randomVerticalPosition[1] = 2.12f;
-            numberToChoose = randomVerticalPosition.Length; //number of positions
-            randomIndex = Random.Range(0, numberToChoose); //random index
-            result = randomVerticalPosition[randomIndex]; //result
+            if (myBool) //if true, set on horizontal line
 
-            randomHorizontalPositionFloat = Random.Range(-3.4f, 3.4f); //random horizontal position
+                {
+                    //Generate vertical position
 
-            //Set Spawner position
-            spawnerPosition = new Vector3(randomHorizontalPositionFloat, result, transform.position.z); //spawner position
+                    randomVerticalPosition = new float[2];
+                    randomVerticalPosition[0] = -2.12f;
+                    randomVerticalPosition[1] = 2.12f;
+                    numberToChoose = randomVerticalPosition.Length; //number of positions
+                    randomIndex = Random.Range(0, numberToChoose); //random index
+                    result = randomVerticalPosition[randomIndex]; //result
 
-            //Spawn Ammo
-            DarkTonic.CoreGameKit.PoolBoss.Spawn(ammoPickup, spawnerPosition, ammoPickup.rotation, null); //spawn ammo pickup
+                    randomHorizontalPositionFloat = Random.Range(-3.4f, 3.4f); //random horizontal position
 
-            yield return new WaitForSeconds(waitingTime - (waitingTimeModifier * (float)GlobalsManager.level)); //wait for waiting time
-            StartCoroutine(SpawnAmmo()); //spawn ammo pickup again
+                    //Set Spawner position
+                    spawnerPosition = new Vector3(randomHorizontalPositionFloat, result, transform.position.z); //spawner position
+
+                    //Spawn Ammo
+                    DarkTonic.CoreGameKit.PoolBoss.Spawn(ammoPickup, spawnerPosition, ammoPickup.rotation, null); //spawn ammo pickup
+
+                    yield return new WaitForSeconds(waitingTime - (waitingTimeModifier * (float)GlobalsManager.level)); //wait for waiting time
+                    StartCoroutine(SpawnAmmo()); //spawn ammo pickup again
+                }
+
+                else //if false, set on vertical line
+
+                {
+                    randomHorizontalPosition = new float[2];
+                    randomHorizontalPosition[0] = -3.4f;
+                    randomHorizontalPosition[1] = 3.4f;
+                    numberToChoose = randomHorizontalPosition.Length; //number of positions
+                    randomIndex = Random.Range(0, numberToChoose); //random index
+                    result = randomHorizontalPosition[randomIndex]; //result
+
+                    randomVerticalPositionFloat = Random.Range(-2.12f, 2.12f); //random vertical position
+
+                    //Set Spawner position
+                    spawnerPosition = new Vector3(result, randomVerticalPositionFloat, transform.position.z); //spawner position
+
+                    //Spawn Ammo
+                    DarkTonic.CoreGameKit.PoolBoss.Spawn(ammoPickup, spawnerPosition, ammoPickup.rotation, null); //spawn ammo pickup
+
+                    yield return new WaitForSeconds(waitingTime - (waitingTimeModifier * (float)GlobalsManager.level)); //wait for waiting time
+                    StartCoroutine(SpawnAmmo()); //spawn ammo pickup again
+                }
         }
 
-        else //if false, set on vertical line
-
+        else
+        
         {
-            randomHorizontalPosition = new float[2];
-            randomHorizontalPosition[0] = -3.4f;
-            randomHorizontalPosition[1] = 3.4f;
-            numberToChoose = randomHorizontalPosition.Length; //number of positions
-            randomIndex = Random.Range(0, numberToChoose); //random index
-            result = randomHorizontalPosition[randomIndex]; //result
-
-            randomVerticalPositionFloat = Random.Range(-2.12f, 2.12f); //random vertical position
-
-            //Set Spawner position
-            spawnerPosition = new Vector3(result, randomVerticalPositionFloat, transform.position.z); //spawner position
-
-            //Spawn Ammo
-            DarkTonic.CoreGameKit.PoolBoss.Spawn(ammoPickup, spawnerPosition, ammoPickup.rotation, null); //spawn ammo pickup
-
-            yield return new WaitForSeconds(waitingTime - (waitingTimeModifier * (float)GlobalsManager.level)); //wait for waiting time
-            StartCoroutine(SpawnAmmo()); //spawn ammo pickup again
+            Debug.Log("Game is not playing");
         }
 
     }
 
-    void GameOver()
+    private void GameOver()
 
     {
         //Unsubscribe from Game Over Event and stop spawning ammo
@@ -135,10 +146,16 @@ public class AmmoSpawner : MonoBehaviour
         StopCoroutine(SpawnAmmo()); //stop spawning ammo
     }
 
-    void RestartGame()
+    private void RestartGame()
 
     {
 
+    }
+
+    private void BackToMainMenu()
+
+    {
+        StopAllCoroutines(); //stop spawning ammo
     }
 
     private void OnDisable()

@@ -25,6 +25,7 @@ public class AmmoPickup : MonoBehaviour
         targetObject = GameObject.Find("Player"); //find the player object
         EventManager.OnGameOverEvent += GameOver; //subscribe to event
         EventManager.OnGameRestartEvent += RestartGame; //subscribe to event
+        EventManager.OnBackToMainMenuEvent += BackToMainMenu; //subscribe to event
     }
 
     void Update()
@@ -60,10 +61,18 @@ public class AmmoPickup : MonoBehaviour
     }
 
     void GameOver()
+    
     {
 
     }
+
     void RestartGame()
+
+    {
+        DarkTonic.CoreGameKit.PoolBoss.Despawn(this.transform); //despawn the ammo pickup
+    }
+
+    void BackToMainMenu()
 
     {
         DarkTonic.CoreGameKit.PoolBoss.Despawn(this.transform); //despawn the ammo pickup

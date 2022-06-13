@@ -48,10 +48,7 @@ public class HealthBar : MonoBehaviour
     void RestartGame()
 
     {
-        healthValue = GlobalsManager.health;
-        energyBar.SetValueMax(GlobalsManager.health);
-        energyBar.SetValueMin(0);
-        energyBar.SetValueCurrent(GlobalsManager.health);
+
     }
 
 

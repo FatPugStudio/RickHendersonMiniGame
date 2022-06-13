@@ -58,8 +58,8 @@ public class ShipMovement : MonoBehaviour
         EventManager.OnGameOverEvent += GameOver; // Subscribe to the event.
         EventManager.OnGameStartEvent += StartGame; // Subscribe to the event.
         EventManager.OnGameRestartEvent += GameRestart; // Subscribe to the event.
+        EventManager.OnBackToMainMenuEvent += BackToMainMenu; // Subscribe to the event.
 
-        //boostDisplayGameObject.SetActive(false);
     }
 
     private void StartGame()
@@ -73,9 +73,6 @@ public class ShipMovement : MonoBehaviour
         playerJet.SetActive(true);
         particleSystem.playbackSpeed = 1.0f;
         particleSystem.Play();
-
-        //Activate BoostCounter game object
-        //boostDisplayGameObject.SetActive(true);
 
         if (GlobalsManager.shipSelected == ShipSelected.Rick)
 
@@ -229,41 +226,6 @@ public class ShipMovement : MonoBehaviour
         transform.position = new Vector3(0, 0, 1);
         transform.rotation = new Quaternion(0, 0, 0, 0);
         //particleSystem.Stop();
-
-        if (GlobalsManager.shipSelected == ShipSelected.Rick)
-
-        {
-            regularSpeed = 0.75f;
-            boostSpeed = 1.0f;
-            brakeSpeed = 0.5f;
-            boostMeterMax = 10.0f;
-            repeatedRendererUGUI.repeatCount = rickRepeatCount;
-        }
-
-        else if (GlobalsManager.shipSelected == ShipSelected.Ben)
-
-        {
-            regularSpeed = 0.9f;
-            boostSpeed = 1.15f;
-            brakeSpeed = 0.65f;
-            boostMeterMax = 12.0f;
-            repeatedRendererUGUI.repeatCount = benRepeatCount;
-        }
-
-        else if (GlobalsManager.shipSelected == ShipSelected.Thoraxx)
-
-        {
-            regularSpeed = 0.6f;
-            boostSpeed = 0.75f;
-            brakeSpeed = 0.35f;
-            boostMeterMax = 8.0f;
-            repeatedRendererUGUI.repeatCount = thoraxxRepeatCount;
-        }
-
-        boostMeterClamped = boostMeterMax;
-        energyBar.SetValueMin(0);
-        energyBar.SetValueMax(Convert.ToInt32(boostMeterMax));
-        energyBar.SetValueCurrent(Convert.ToInt32(boostMeterMax));
     }
 
 
@@ -272,6 +234,16 @@ public class ShipMovement : MonoBehaviour
     {
         EventManager.OnGameOverEvent -= GameOver; // Unsubscribe to the event.
         EventManager.OnGameStartEvent -= StartGame; // Unsubscribe to the event.
+    }
+
+    private void BackToMainMenu()
+
+    {
+        particleSystem.playbackSpeed = 1;
+        particleSystem.Stop();
+        playerJet.SetActive(false);
+        transform.position = new Vector3(0, 0, 1);
+        transform.rotation = new Quaternion(0, 0, 0, 0);
     }
 
 }

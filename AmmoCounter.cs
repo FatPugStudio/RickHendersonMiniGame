@@ -35,7 +35,6 @@ public class AmmoCounter : MonoBehaviour
     void UpdateAmmoCounter()
 
     {
-        GlobalsManager.ammo += 2; //add 2 ammo to the ammo counter
         ammoToDisplay = GlobalsManager.ammo; //update the ammo to display
         ammoCounter.SetText(ammoToDisplay.ToString()); //set the ammo counter text
     }

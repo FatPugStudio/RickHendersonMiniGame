@@ -119,23 +119,8 @@ public class Health : MonoBehaviour
     void GameRestart()
 
     {
-        switch (shipSelected)
-
-        {
-            //enum Switch Ship Selected and set health
-
-            case ShipSelected.Rick:
-                GlobalsManager.health = rickHealth;
-                break;
-
-            case ShipSelected.Ben:
-                GlobalsManager.health = benHealth;
-                break;
-
-            case ShipSelected.Thoraxx:
-                GlobalsManager.health = thoraxxHealth;
-                break;
-        }
+        //spawn explosion
+        //spawn game restart screen
     }
 
 }

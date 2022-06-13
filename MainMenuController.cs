@@ -127,7 +127,6 @@ public class MainMenuController : MonoBehaviour
         leaderboardsMenu.gameObject.SetActive(false); // set leaderboards menu to false
         shipSelectionMenu.gameObject.SetActive(false); // set ship selection menu to false
         EventManager.OnGamePauseEvent += GamePause; // add event listener
-
     }
 
     private void Start()
@@ -206,6 +205,8 @@ public class MainMenuController : MonoBehaviour
     void ProcessInput()
 
     {
+
+        #region Main Menu
 
         if (GlobalsManager.gameState == GameState.MainMenu)
 
@@ -418,12 +419,13 @@ public class MainMenuController : MonoBehaviour
 
                 {
                     Application.Quit();
-
                 }
 
             }
 
         }
+
+        #endregion
 
         #region Options Menu
 
@@ -710,10 +712,10 @@ public class MainMenuController : MonoBehaviour
                 optionsPauseMenuSelected = false;
                 mainMenuPauseMenuSelected = false;
 
+                EventManager.OnGameResumeEventBroadcast();
                 pauseMenu.SetActive(false);
                 GlobalsManager.gameState = GameState.Game;
                 Time.timeScale = 1;
-                EventManager.OnGameResumeEventBroadcast();
             }
 
             if (fire)
@@ -722,8 +724,6 @@ public class MainMenuController : MonoBehaviour
                 if (resumeSelected)
 
                 {
-
-
                     resumeGameButtonTMP.color = dimmedColor;
                     restartButtonPauseMenuTMP.color = dimmedColor;
                     optionsPauseButtonTMP.color = dimmedColor;
@@ -734,10 +734,10 @@ public class MainMenuController : MonoBehaviour
                     optionsPauseMenuSelected = false;
                     mainMenuPauseMenuSelected = false;
 
+                    EventManager.OnGameResumeEventBroadcast();
                     pauseMenu.SetActive(false);
                     GlobalsManager.gameState = GameState.Game;
                     Time.timeScale = 1;
-                    EventManager.OnGameResumeEventBroadcast();
 
                 }
 
@@ -754,10 +754,10 @@ public class MainMenuController : MonoBehaviour
                     optionsPauseMenuSelected = false;
                     mainMenuPauseMenuSelected = false;
 
+                    EventManager.OnGameRestartEventBroadcast();
                     pauseMenu.SetActive(false);
                     GlobalsManager.gameState = GameState.Game;
                     Time.timeScale = 1;
-                    EventManager.OnGameRestartEventBroadcast();
 
                     //reset health
                     //reset ammo
@@ -777,11 +777,16 @@ public class MainMenuController : MonoBehaviour
                 else if (mainMenuPauseMenuSelected)
 
                 {
+                    mainMenuButtonPauseMenuTMP.color = dimmedColor;
+
+                    selectedShipImage.enabled = false;
                     EventManager.OnDespawnEverythingEventBroadcast();
+                    EventManager.OnBackToMainMenuEventBroadcast();
                     pauseMenu.SetActive(false);
                     mainMenu.SetActive(true);
                     GlobalsManager.gameState = GameState.MainMenu;
                     Time.timeScale = 1;
+                    Start();
                 }
             }
 

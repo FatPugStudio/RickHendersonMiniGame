@@ -33,6 +33,9 @@ public class EventManager : MonoBehaviour
     public delegate void OnGameResume();
     public static event OnGameResume OnGameResumeEvent;
 
+    public delegate void OnBackToMainMenu();
+    public static event OnBackToMainMenu OnBackToMainMenuEvent;
+
     public static void OnGameRestartEventBroadcast()
     {
         if (OnGameRestartEvent != null)
@@ -95,6 +98,13 @@ public class EventManager : MonoBehaviour
     {
         if (OnGameResumeEvent != null)
             OnGameResumeEvent();
+    }
+
+    public static void OnBackToMainMenuEventBroadcast()
+
+    {
+        if (OnBackToMainMenuEvent != null)
+            OnBackToMainMenuEvent();
     }
 
 }
