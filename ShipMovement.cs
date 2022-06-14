@@ -122,7 +122,6 @@ public class ShipMovement : MonoBehaviour
         {
             //Clamp the boost meter
 
-            //Debug.Log(boostMeterClamped);
             boostMeterClamped = Mathf.Clamp(boostMeterClamped, 0, boostMeterMax);
 
             //Move Ship
@@ -201,7 +200,6 @@ public class ShipMovement : MonoBehaviour
     {
         particleSystem.playbackSpeed = 1.0f;
         Speed = regularSpeed;
-        //Debug.Log("Boost Empty");
     }
 
     private void Boost()
@@ -209,7 +207,6 @@ public class ShipMovement : MonoBehaviour
     {
         boostMeterClamped -= 0.1f;
         energyBar.SetValueCurrent(Convert.ToInt32(boostMeterClamped));
-        //Debug.Log(boostMeterClamped);
     }
 
     private void GameOver()
@@ -225,7 +222,6 @@ public class ShipMovement : MonoBehaviour
         particleSystem.playbackSpeed = 1;
         transform.position = new Vector3(0, 0, 1);
         transform.rotation = new Quaternion(0, 0, 0, 0);
-        //particleSystem.Stop();
     }
 
 

@@ -1,32 +1,16 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using DarkTonic.CoreGameKit;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-
-public class AmmoSpawner : MonoBehaviour
+public class SmallAsteroidSpawner : MonoBehaviour
 {
-
-    public float waitingTime; //time between spawns
-    public float waitingTimeModifier; //modifier for the waiting time
-
-    public float rickWaitingTime; //time between spawns
-    public float benWaitingTime; //time between spawns
-    public float thoraxxWaitingTime; //time between spawns
-
-    public float rickWaitingTimeModifier; //modifier for the waiting time
-    public float benWaitingTimeModifier; //modifier for the waiting time
-    public float thoraxxWaitingTimeModifier; //modifier for the waiting time
-
-    public Transform ammoPickup; //the ammo pickup prefab
-    Vector3 spawnerPosition; //the position of the spawner
+    // Start is called before the first frame update
+    [SerializeField] private Transform smallAsteroid;
 
     //Array stuff
     private float[] randomVerticalPosition;
     private float[] randomHorizontalPosition;
-
+    
     private int numberToChoose;
     private int randomIndex;
     private float result;
@@ -34,7 +18,7 @@ public class AmmoSpawner : MonoBehaviour
     private float randomHorizontalPositionFloat;
     private float randomVerticalPositionFloat;
 
-    public ShipSelected shipSelected; //the ship selected
+    Vector3 spawnerPosition; //the position of the spawner
 
     void OnEnable()
 
@@ -44,36 +28,13 @@ public class AmmoSpawner : MonoBehaviour
         EventManager.OnGameRestartEvent += RestartGame; //subscribe to event
         EventManager.OnBackToMainMenuEvent += BackToMainMenu; //subscribe to event    
     }
-
-    void StartGame()
-
+    
+    private void StartGame()
     {
-        switch (shipSelected)
-
-        {
-            case ShipSelected.Rick:
-                waitingTime = rickWaitingTime;
-                waitingTimeModifier = rickWaitingTimeModifier;
-                break;
-
-            case ShipSelected.Ben:
-                waitingTime = benWaitingTime;
-                waitingTimeModifier = benWaitingTimeModifier;
-                break;
-
-            case ShipSelected.Thoraxx:
-                waitingTime = thoraxxWaitingTime;
-                waitingTimeModifier = thoraxxWaitingTimeModifier;
-                break;
-        }
-
-        //Level 1, spawn ammo pickup each waiting time;
-
-        StartCoroutine(SpawnAmmo());
-
+        StartCoroutine(SpawnSmallAsteroid());
     }
 
-    IEnumerator SpawnAmmo()
+    IEnumerator SpawnSmallAsteroid()
 
     {
 
@@ -99,11 +60,11 @@ public class AmmoSpawner : MonoBehaviour
                     //Set Spawner position
                     spawnerPosition = new Vector3(randomHorizontalPositionFloat, result, transform.position.z); //spawner position
 
-                    //Spawn Ammo
-                    DarkTonic.CoreGameKit.PoolBoss.Spawn(ammoPickup, spawnerPosition, ammoPickup.rotation, null); //spawn ammo pickup
+                    //Spawn Asteroid
+                    DarkTonic.CoreGameKit.PoolBoss.Spawn(smallAsteroid, spawnerPosition, smallAsteroid.rotation, null); //spawn ammo pickup
 
-                    yield return new WaitForSeconds(waitingTime - (waitingTimeModifier * (float)GlobalsManager.level)); //wait for waiting time
-                    StartCoroutine(SpawnAmmo()); //spawn ammo pickup again
+                    yield return new WaitForSeconds(1); //wait for waiting time
+                    StartCoroutine(SpawnSmallAsteroid()); //spawn ammo pickup again
                 }
 
                 else //if false, set on vertical line
@@ -122,10 +83,10 @@ public class AmmoSpawner : MonoBehaviour
                     spawnerPosition = new Vector3(result, randomVerticalPositionFloat, transform.position.z); //spawner position
 
                     //Spawn Ammo
-                    DarkTonic.CoreGameKit.PoolBoss.Spawn(ammoPickup, spawnerPosition, ammoPickup.rotation, null); //spawn ammo pickup
+                    DarkTonic.CoreGameKit.PoolBoss.Spawn(smallAsteroid, spawnerPosition, smallAsteroid.rotation, null); //spawn ammo pickup
 
-                    yield return new WaitForSeconds(waitingTime - (waitingTimeModifier * (float)GlobalsManager.level)); //wait for waiting time
-                    StartCoroutine(SpawnAmmo()); //spawn ammo pickup again
+                    yield return new WaitForSeconds(1); //wait for waiting time
+                    StartCoroutine(SpawnSmallAsteroid()); //spawn ammo pickup again
                 }
         }
 
@@ -145,16 +106,10 @@ public class AmmoSpawner : MonoBehaviour
         StopAllCoroutines(); //stop spawning ammo
     }
 
-    private void RestartGame()
-
-    {
-
-    }
-
     private void BackToMainMenu()
 
     {
-        StopAllCoroutines(); //stop spawning ammo
+        StopAllCoroutines(); //stop spawning asteroids
     }
 
     private void OnDisable()
@@ -162,4 +117,11 @@ public class AmmoSpawner : MonoBehaviour
     {
         EventManager.OnGameStartEvent -= StartGame; //unsubscribe from Game Start Event
     }
+
+    private void RestartGame()
+
+    {
+        StartCoroutine(SpawnSmallAsteroid()); //start spawning asteroids again
+    }
 }
+
