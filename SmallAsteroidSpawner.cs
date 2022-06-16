@@ -10,7 +10,7 @@ public class SmallAsteroidSpawner : MonoBehaviour
     //Array stuff
     private float[] randomVerticalPosition;
     private float[] randomHorizontalPosition;
-    
+
     private int numberToChoose;
     private int randomIndex;
     private float result;
@@ -18,7 +18,12 @@ public class SmallAsteroidSpawner : MonoBehaviour
     private float randomHorizontalPositionFloat;
     private float randomVerticalPositionFloat;
 
+    [SerializeField] private Transform spawnedTransform;
+
     Vector3 spawnerPosition; //the position of the spawner
+
+    [SerializeField] private float waitTime = 3f;
+    [SerializeField] private float waitTimeMultiplier = 0.5f;
 
     void OnEnable()
 
@@ -27,8 +32,9 @@ public class SmallAsteroidSpawner : MonoBehaviour
         EventManager.OnGameOverEvent += GameOver; //subscribe to event
         EventManager.OnGameRestartEvent += RestartGame; //subscribe to event
         EventManager.OnBackToMainMenuEvent += BackToMainMenu; //subscribe to event    
+        EventManager.OnNextLevelEvent += NextLevel; //subscribe to event
     }
-    
+
     private void StartGame()
     {
         StartCoroutine(SpawnSmallAsteroid());
@@ -45,53 +51,56 @@ public class SmallAsteroidSpawner : MonoBehaviour
 
             if (myBool) //if true, set on horizontal line
 
-                {
-                    //Generate vertical position
+            {
+                //Generate vertical position
 
-                    randomVerticalPosition = new float[2];
-                    randomVerticalPosition[0] = -2.12f;
-                    randomVerticalPosition[1] = 2.12f;
-                    numberToChoose = randomVerticalPosition.Length; //number of positions
-                    randomIndex = Random.Range(0, numberToChoose); //random index
-                    result = randomVerticalPosition[randomIndex]; //result
+                randomVerticalPosition = new float[2];
+                randomVerticalPosition[0] = -2.12f;
+                randomVerticalPosition[1] = 2.12f;
+                numberToChoose = randomVerticalPosition.Length; //number of positions
+                randomIndex = Random.Range(0, numberToChoose); //random index
+                result = randomVerticalPosition[randomIndex]; //result
 
-                    randomHorizontalPositionFloat = Random.Range(-3.4f, 3.4f); //random horizontal position
+                randomHorizontalPositionFloat = Random.Range(-3.4f, 3.4f); //random horizontal position
 
-                    //Set Spawner position
-                    spawnerPosition = new Vector3(randomHorizontalPositionFloat, result, transform.position.z); //spawner position
+                //Set Spawner position
+                spawnerPosition = new Vector3(randomHorizontalPositionFloat, result, transform.position.z); //spawner position
 
-                    //Spawn Asteroid
-                    DarkTonic.CoreGameKit.PoolBoss.Spawn(smallAsteroid, spawnerPosition, smallAsteroid.rotation, null); //spawn ammo pickup
+                //Spawn Asteroid
+                spawnedTransform = DarkTonic.CoreGameKit.PoolBoss.Spawn(smallAsteroid, spawnerPosition, smallAsteroid.rotation, null);
+                //spawn small Asteroid
 
-                    yield return new WaitForSeconds(1); //wait for waiting time
-                    StartCoroutine(SpawnSmallAsteroid()); //spawn ammo pickup again
-                }
+                yield return new WaitForSeconds(waitTime); //wait for waiting time
+                StartCoroutine(SpawnSmallAsteroid()); //spawn ammo pickup again
+            }
 
-                else //if false, set on vertical line
+            else //if false, set on vertical line
 
-                {
-                    randomHorizontalPosition = new float[2];
-                    randomHorizontalPosition[0] = -3.4f;
-                    randomHorizontalPosition[1] = 3.4f;
-                    numberToChoose = randomHorizontalPosition.Length; //number of positions
-                    randomIndex = Random.Range(0, numberToChoose); //random index
-                    result = randomHorizontalPosition[randomIndex]; //result
+            {
+                randomHorizontalPosition = new float[2];
+                randomHorizontalPosition[0] = -3.4f;
+                randomHorizontalPosition[1] = 3.4f;
+                numberToChoose = randomHorizontalPosition.Length; //number of positions
+                randomIndex = Random.Range(0, numberToChoose); //random index
+                result = randomHorizontalPosition[randomIndex]; //result
 
-                    randomVerticalPositionFloat = Random.Range(-2.12f, 2.12f); //random vertical position
+                randomVerticalPositionFloat = Random.Range(-2.12f, 2.12f); //random vertical position
 
-                    //Set Spawner position
-                    spawnerPosition = new Vector3(result, randomVerticalPositionFloat, transform.position.z); //spawner position
+                //Set Spawner position
+                spawnerPosition = new Vector3(result, randomVerticalPositionFloat, transform.position.z); //spawner position
 
-                    //Spawn Ammo
-                    DarkTonic.CoreGameKit.PoolBoss.Spawn(smallAsteroid, spawnerPosition, smallAsteroid.rotation, null); //spawn ammo pickup
+                //Spawn Ammo
+                spawnedTransform = DarkTonic.CoreGameKit.PoolBoss.Spawn(smallAsteroid, spawnerPosition, smallAsteroid.rotation, null);
+                //spawn small asteroid
 
-                    yield return new WaitForSeconds(1); //wait for waiting time
-                    StartCoroutine(SpawnSmallAsteroid()); //spawn ammo pickup again
-                }
+
+                yield return new WaitForSeconds(waitTime); //wait for waiting time
+                StartCoroutine(SpawnSmallAsteroid()); //spawn ammo pickup again
+            }
         }
 
         else
-        
+
         {
             Debug.Log("Game is not playing");
         }
@@ -122,6 +131,13 @@ public class SmallAsteroidSpawner : MonoBehaviour
 
     {
         StartCoroutine(SpawnSmallAsteroid()); //start spawning asteroids again
+    }
+
+    private void NextLevel()
+
+    {
+        var levelFloat = (float)GlobalsManager.level;
+        waitTime = (waitTime + levelFloat) * waitTimeMultiplier; //increase wait time
     }
 }
 

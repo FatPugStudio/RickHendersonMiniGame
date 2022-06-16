@@ -60,6 +60,7 @@ public class ShipMovement : MonoBehaviour
         EventManager.OnGameRestartEvent += GameRestart; // Subscribe to the event.
         EventManager.OnBackToMainMenuEvent += BackToMainMenu; // Subscribe to the event.
 
+        //boostDisplayGameObject.SetActive(false);
     }
 
     private void StartGame()
@@ -73,6 +74,12 @@ public class ShipMovement : MonoBehaviour
         playerJet.SetActive(true);
         particleSystem.playbackSpeed = 1.0f;
         particleSystem.Play();
+
+        //Activate BoostCounter game object
+        boostDisplayGameObject.SetActive(true);
+
+        //Activate BoostCounter game object
+        //boostDisplayGameObject.SetActive(true);
 
         if (GlobalsManager.shipSelected == ShipSelected.Rick)
 

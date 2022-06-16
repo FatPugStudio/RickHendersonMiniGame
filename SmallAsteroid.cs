@@ -14,21 +14,25 @@ public class SmallAsteroid : MonoBehaviour
 
     private bool isOnScreen;
     private bool isDestroyed;
+    private bool isMoving = false;
     private Camera mainCamera;
     private SpriteRenderer spriteRenderer;
     private Plane[] planes;
-    [SerializeField] private Transform gem;
+    private Transform gem;
 
     [SerializeField] private Transform circleExplosion;
     [SerializeField] private Transform genericExplosion;
     [SerializeField] private Transform emberExplosion;
-    [SerializeField] private RuntimeAnimatorController animatorController;
+    private RuntimeAnimatorController animatorController;
 
     private Quaternion rotationQuaternion;
     private Vector3 eulerAnglesRotation;
     private float randomZ;
 
-    private void Start()
+    [SerializeField]private float horizontalSpeed;
+    [SerializeField]private float verticalSpeed;
+
+    private void OnEnable()
 
     {
         EventManager.OnBombActivatedEvent += DestroyedByBomb;
@@ -37,52 +41,111 @@ public class SmallAsteroid : MonoBehaviour
         planes = GeometryUtility.CalculateFrustumPlanes(mainCamera);
         spriteRenderer = GetComponent<SpriteRenderer>();
         isDestroyed = false;
+        isMoving = false;
         hitPoints = defaultHitPoints;
         int score = Convert.ToInt32(hitPoints);
-        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        
         EventManager.OnDespawnEverythingEvent += DestroySelf;
+        
+        CalculateVerticalMovementSpeed();
     }
 
     private void Update()
 
     {
-        checkIsOnScreen();
+        //checkIsOnScreen();
+        Move();
+    }
+
+    private void CalculateVerticalMovementSpeed() 
+
+    {
+    
+        if (!isMoving)
+
+        {
+        
+            if (transform.position.x > 0)
+
+            {
+                verticalSpeed = UnityEngine.Random.Range(-0.5f, 0.1f);
+            }
+
+            else if (transform.position.x < 0)
+
+            {
+                verticalSpeed = UnityEngine.Random.Range(0.1f, 0.5f);
+            }
+
+            CalculateHorizontalMovementSpeed();     
+
+}
+    }
+
+    private void CalculateHorizontalMovementSpeed()
+    
+    {
+        
+        if (!isMoving)
+
+        {
+
+            if (transform.position.y > 0)
+
+                {
+                    horizontalSpeed = UnityEngine.Random.Range(-0.5f, 0.1f);
+                }
+
+            else if (transform.position.y < 0)
+
+                {            
+                    horizontalSpeed = UnityEngine.Random.Range(0.1f, 0.5f);
+                }
+            
+            isMoving = true;
+        }
+    }
+
+    private void Move()
+    
+    {
+        transform.Translate(new Vector3(horizontalSpeed, verticalSpeed, 0) * Time.deltaTime);
     }
 
     //Change to coroutine
 
-    private void checkIsOnScreen()
+    // private void checkIsOnScreen()
 
-    {
-        if (GeometryUtility.TestPlanesAABB(planes, spriteRenderer.bounds))
+    // {
+    //     if (GeometryUtility.TestPlanesAABB(planes, spriteRenderer.bounds))
 
-        {
-            //Visible
+    //     {
+    //         //Visible
 
-            if (polygonCollider2D.enabled)
+    //     if (polygonCollider2D.enabled)
 
-            {
-                return;
-            }
+    //         {
+    //             return;
+    //         }
 
-            else if (!polygonCollider2D.enabled)
+    //     else if (!polygonCollider2D.enabled)
 
-            {
-                polygonCollider2D.enabled = true;
-            }
+    //         {
+    //             polygonCollider2D.enabled = true;
+    //         }
 
-        }
+    //     }
 
-        else
+    //     else
 
-        {
-            //Not Visible
-            Despawn();
-        }
+    //     {
+    //         //Not Visible
+    //         Despawn();
+    //     }
 
-    }
+    // }
 
-    void ApplyDamage(float bulletDamage)
+    private void ApplyDamage(float bulletDamage)
 
     {
         hitPoints = hitPoints - bulletDamage;
@@ -160,6 +223,7 @@ public class SmallAsteroid : MonoBehaviour
     {
         isDestroyed = true;
         polygonCollider2D.enabled = false;
+        EventManager.OnDespawnEverythingEvent -= DestroySelf;
         DarkTonic.CoreGameKit.PoolBoss.Despawn(this.gameObject.transform, false);
     }
 
@@ -168,5 +232,7 @@ public class SmallAsteroid : MonoBehaviour
     {
         DarkTonic.CoreGameKit.PoolBoss.Spawn(gem, transform.position, rotationQuaternion, null);
     }
+
+
 
 }

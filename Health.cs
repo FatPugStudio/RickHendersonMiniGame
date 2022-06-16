@@ -13,10 +13,12 @@ public class Health : MonoBehaviour
 
     public string enemyHitTag;
 
-    public bool shieldActive;
+    [SerializeField] public bool shieldActive;
 
-    private GameObject playerShield;
-    private PlayerShipShield _playerShipShield;
+    [SerializeField] private GameObject playerShield;
+    [SerializeField] private PlayerShipShield _playerShipShield;
+
+    [SerializeField] private float waitTime;
 
     void OnEnable()
 
@@ -119,8 +121,23 @@ public class Health : MonoBehaviour
     void GameRestart()
 
     {
-        //spawn explosion
-        //spawn game restart screen
+        switch (shipSelected)
+
+        {
+            //enum Switch Ship Selected and set health
+
+            case ShipSelected.Rick:
+                GlobalsManager.health = rickHealth;
+                break;
+
+            case ShipSelected.Ben:
+                GlobalsManager.health = benHealth;
+                break;
+
+            case ShipSelected.Thoraxx:
+                GlobalsManager.health = thoraxxHealth;
+                break;
+        }
     }
 
 }

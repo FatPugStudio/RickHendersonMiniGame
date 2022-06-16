@@ -36,6 +36,9 @@ public class EventManager : MonoBehaviour
     public delegate void OnBackToMainMenu();
     public static event OnBackToMainMenu OnBackToMainMenuEvent;
 
+    public delegate void OnNextLevel();
+    public static event OnNextLevel OnNextLevelEvent;
+
     public static void OnGameRestartEventBroadcast()
     {
         if (OnGameRestartEvent != null)
